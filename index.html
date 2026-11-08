@@ -1,0 +1,1564 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jaehoon Lee · Power Electronics</title>
+<meta name="description" content="Jaehoon Lee (이재훈) · Power electronics engineer. Motor control, PWM inverters, power conversion and C2000 DSP firmware, with models and measurements built by hand.">
+<meta name="author" content="Jaehoon Lee">
+<meta name="theme-color" content="#0a0e10">
+<!-- 링크 공유 미리보기(카카오톡·메일·LinkedIn). 주소를 바꾸면 og:url, og:image, twitter:image, canonical도 같이 바꿔야 합니다. -->
+<link rel="canonical" href="https://pe-nomad.github.io/">
+<meta property="og:url" content="https://pe-nomad.github.io/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Jaehoon Lee · Portfolio">
+<meta property="og:title" content="Jaehoon Lee · Power Electronics Engineer">
+<meta property="og:description" content="Motor control · PWM inverter · Power conversion · DSP firmware. 모터 제어부터 인버터 PWM, C2000 레지스터까지 직접 만든 모델과 측정 결과.">
+<meta property="og:image" content="https://pe-nomad.github.io/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Jaehoon Lee · Power Electronics Engineer">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:locale:alternate" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Jaehoon Lee · Power Electronics Engineer">
+<meta name="twitter:description" content="Motor control · PWM inverter · Power conversion · DSP firmware.">
+<meta name="twitter:image" content="https://pe-nomad.github.io/img/og.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Sans+KR:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout: 인트로(모터=심장, 전류가 topology를 거쳐 6개 산업으로 차례로 흐르는 캔버스) → Profile(사진·소속·학점) → 01 Motor Control → 02 PWM Inverter(PWM Lab 포함) → 03 Power Conversion → 04 DSP Firmware → Toolbox → Contact. 어두운 단일 테마 */
+:root{
+  --bg:#0a0e10;--panel:#11171a;--panel2:#161e22;--ink:#e6ecee;--muted:#8b989d;--line:#222c31;
+  --pa:#ff7a5c;--pb:#f2c23a;--pc:#6aa2ff;
+  --display:"Archivo","IBM Plex Sans KR",system-ui,sans-serif;
+  --body:"IBM Plex Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--pc);outline-offset:3px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+@media (max-width:520px){.wrap{padding:0 16px}}
+.label{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.en{font-family:var(--mono);font-size:.9em;color:var(--ink)}
+
+/* bar */
+.bar{border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(10px)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;gap:20px}
+.id{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--display);font-weight:700;font-stretch:112%}
+.dots{display:flex;gap:3px}.dots i{width:7px;height:7px;border-radius:50%}
+.bar nav{display:flex;gap:2px}
+.bar nav a{font-family:var(--mono);font-size:12px;text-decoration:none;color:var(--muted);padding:6px 10px;border-radius:4px}
+.bar nav a:hover{color:var(--ink);background:var(--panel)}
+.bar nav{margin-left:auto}
+.bar-act{display:flex;align-items:center;gap:8px}
+.lang{display:flex;border:1px solid var(--line);border-radius:999px;padding:2px}
+.lang button{font:500 11px var(--mono);letter-spacing:.04em;padding:4px 9px;border:0;border-radius:999px;background:transparent;color:var(--muted);cursor:pointer}
+.lang button:hover{color:var(--ink)}
+.lang button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.menu-btn{display:none;width:38px;height:38px;border:1px solid var(--line);border-radius:8px;background:transparent;cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.menu-btn span{display:block;width:16px;height:1.5px;background:var(--ink);transition:transform .2s,opacity .2s}
+.bar.open .menu-btn span:nth-child(1){transform:translateY(5.5px) rotate(45deg)}
+.bar.open .menu-btn span:nth-child(2){opacity:0}
+.bar.open .menu-btn span:nth-child(3){transform:translateY(-5.5px) rotate(-45deg)}
+@media (max-width:960px){.bar nav a{padding:6px 7px}}
+@media (max-width:860px){
+  .menu-btn{display:inline-flex}
+  .bar nav{display:none;position:absolute;top:56px;left:0;right:0;flex-direction:column;gap:0;padding:8px 16px 16px;background:var(--bg);border-bottom:1px solid var(--line);max-height:calc(100vh - 56px);overflow:auto}
+  .bar.open nav{display:flex}
+  .bar nav a{font-size:14px;padding:14px 6px;border-bottom:1px solid var(--line);border-radius:0;color:var(--ink)}
+  .bar nav a:last-child{border-bottom:0}
+}
+
+
+/* hero: metallic word + name + 3 highlights */
+.hero2{position:relative;height:clamp(560px,90vh,840px);overflow:hidden;border-bottom:1px solid var(--line)}
+.rings{position:absolute;left:50%;top:46%;width:min(1100px,150vw);aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none;opacity:.55}
+.rings svg{width:100%;height:100%;animation:spin 90s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.mega{position:absolute;left:0;right:0;top:48%;transform:translateY(-50%);text-align:center;font-family:var(--display);font-weight:800;font-stretch:112%;font-size:min(10.6vw,300px);line-height:.9;letter-spacing:-.035em;white-space:nowrap;z-index:1;will-change:transform}
+.mega span{display:inline-block;background:linear-gradient(180deg,#ffffff 0%,#dfe5e8 38%,#8c979c 52%,#c9d1d4 70%,#f3f6f7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;animation:rise .9s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i)*55ms)}
+@keyframes rise{from{transform:translateY(40%);opacity:0}to{transform:none;opacity:1}}
+.h-top{position:absolute;top:22px;left:0;right:0;display:flex;justify-content:space-between;gap:16px;z-index:3}
+.h-bot{position:absolute;bottom:28px;left:0;right:0;display:flex;justify-content:space-between;align-items:flex-end;gap:24px;z-index:3}
+.name{font-family:var(--display);font-stretch:115%;font-weight:800;font-size:clamp(28px,3.6vw,46px);line-height:1;letter-spacing:-.035em;margin-bottom:10px}
+.name span{font-family:var(--body);font-stretch:100%;font-weight:500;font-size:.42em;color:var(--muted);letter-spacing:0;margin-left:10px;vertical-align:.3em}
+.role{font-family:var(--display);font-stretch:108%;font-size:clamp(16px,1.8vw,22px);line-height:1.2}
+.role b{font-weight:800}.role i{font-style:italic;font-weight:400;color:var(--muted)}
+.role small{display:block;font-family:var(--mono);font-size:12px;color:var(--muted);font-style:normal;margin-top:6px;letter-spacing:.04em}
+.hl{display:grid;grid-template-columns:repeat(3,minmax(0,200px));gap:10px}
+.hl a{display:flex;flex-direction:column;gap:4px;padding:14px 16px;border:1px solid var(--line);border-top:2px solid var(--hc);border-radius:10px;text-decoration:none;background:color-mix(in srgb,var(--panel) 82%,transparent);backdrop-filter:blur(6px);transition:border-color .2s,transform .2s}
+.hl a:hover{border-color:var(--hc);transform:translateY(-2px)}
+.hl .n{font-family:var(--mono);font-size:11px;color:var(--hc)}
+.hl b{font-family:var(--display);font-stretch:108%;font-weight:700;font-size:16px;line-height:1.2}
+.hl small{font-family:var(--mono);font-size:10.5px;color:var(--muted);line-height:1.4}
+@media (max-width:900px){.h-bot{flex-direction:column;align-items:stretch;gap:16px;bottom:20px}.hl{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:640px){.mega{top:40%}.hl{gap:6px}.hl a{padding:10px 10px}.hl b{font-size:13.5px}.hl small{display:none}.name{font-size:30px}}
+@media (prefers-reduced-motion:reduce){.mega span{animation:none}.rings svg{animation:none}}
+
+/* what I work on */
+.what{padding:72px 0 40px}
+.what-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:28px;flex-wrap:wrap}
+.what-head h2{font-family:var(--display);font-stretch:120%;font-weight:800;font-size:clamp(40px,7vw,96px);line-height:.92;letter-spacing:-.045em;text-align:right;margin-left:auto}
+.rows{border-top:1px solid var(--line)}
+.rows a{display:grid;grid-template-columns:70px 1fr auto;gap:20px;align-items:center;padding:22px 4px;border-bottom:1px solid var(--line);text-decoration:none;transition:background .25s,padding .25s}
+.rows a:hover{background:var(--panel);padding-left:16px}
+.rows .n{font-family:var(--mono);font-size:13px;color:var(--pb)}
+.rows b{font-family:var(--display);font-stretch:112%;font-weight:700;font-size:clamp(22px,3.2vw,38px);letter-spacing:-.02em}
+.rows span{font-family:var(--mono);font-size:12px;color:var(--muted);text-align:right}
+@media (max-width:640px){.rows a{grid-template-columns:44px 1fr}.rows span{grid-column:2;text-align:left}}
+
+.src{display:inline-block;font-family:var(--mono);font-size:10.5px;padding:2px 8px;border-radius:999px;border:1px solid var(--pb);color:var(--pb);margin-left:8px;vertical-align:2px;letter-spacing:.04em}
+/* intro */
+.intro{padding:72px 0 32px}
+.intro .h1{font-family:var(--display);font-weight:800;font-stretch:120%;font-size:clamp(40px,6vw,80px);line-height:1;letter-spacing:-.04em;margin:14px 0 18px;text-wrap:balance}
+.intro .h1 em{font-style:normal;color:var(--pa)}
+.intro .lead{font-size:17px;color:var(--muted);max-width:62ch}
+.intro .lead b{color:var(--ink);font-weight:500}
+.stage{margin-top:28px;border:1px solid var(--line);border-radius:14px;background:radial-gradient(ellipse at 50% 50%,#121a1e 0%,#0a0e10 70%);overflow:hidden}
+#heart{display:block;width:100%}
+.apps{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}
+.apps li:nth-child(4n){border-right:0}
+.apps li:nth-child(-n+4){border-bottom:1px solid var(--line)}
+@media (max-width:719px){.apps{display:none}}
+.apps li{list-style:none;padding:14px 16px;border-right:1px solid var(--line);transition:background .4s}
+.apps li:last-child{border-right:0}
+.apps li b{display:block;font-family:var(--display);font-stretch:108%;font-size:15px;font-weight:700}
+.apps li span{font-family:var(--mono);font-size:11px;color:var(--muted);line-height:1.4;display:block;margin-top:2px}
+.apps li.on{background:var(--panel2)}
+.apps li.on b{color:var(--pb)}
+
+/* profile */
+.profile{border-top:1px solid var(--line);padding:72px 0;display:grid;grid-template-columns:260px 1fr;gap:48px;align-items:start;scroll-margin-top:56px}
+@media (max-width:820px){.profile{grid-template-columns:1fr;gap:28px}}
+.photo{border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--panel);aspect-ratio:3/4;max-width:260px}
+.photo img{width:100%;height:100%;object-fit:cover;display:block}
+.profile h2{font-family:var(--display);font-stretch:118%;font-weight:800;font-size:clamp(34px,4.6vw,56px);letter-spacing:-.035em;line-height:1.02;margin:8px 0 6px}
+.profile h2 span{color:var(--muted);font-weight:500;font-stretch:100%;font-size:.55em;margin-left:10px;letter-spacing:0}
+.tag{font-family:var(--display);font-stretch:110%;font-size:20px;font-weight:600;color:var(--pc);margin-bottom:16px}
+.profile p.body{max-width:62ch;margin-bottom:10px}
+.status{display:grid;gap:10px;margin:22px 0 4px}
+.status div{display:grid;grid-template-columns:110px 1fr;gap:14px;padding:12px 16px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+@media (max-width:480px){.status div{grid-template-columns:1fr;gap:2px}}
+.status .k{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;padding-top:3px}
+.status .k.now{color:var(--pa)}
+.status b{font-weight:600}
+.status span{display:block;font-size:14px;color:var(--muted)}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:22px}
+.facts div{padding:14px 14px 14px 0}
+.facts div+div{padding-left:14px;border-left:1px solid var(--line)}
+.facts strong{display:block;font-family:var(--display);font-stretch:110%;font-size:26px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.facts strong small{font-size:14px;color:var(--muted);font-weight:500}
+.facts span{font-size:12px;color:var(--muted);line-height:1.45;display:block;font-family:var(--mono)}
+@media (max-width:460px){.facts{grid-template-columns:1fr}.facts div+div{border-left:0;border-top:1px solid var(--line);padding-left:0}}
+.pub{font-size:13px;color:var(--muted);margin-top:12px;max-width:70ch}
+.pub i{color:var(--ink)}
+
+/* sector index */
+.index{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:24px;background:var(--panel)}
+@media (max-width:760px){.index{grid-template-columns:1fr}}
+.index a{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;padding:20px;text-decoration:none;border-right:1px solid var(--line)}
+.index a:last-child{border-right:0}
+@media (max-width:760px){.index a{border-right:0;border-bottom:1px solid var(--line)}}
+.index a:hover{background:var(--panel2)}
+.index .n{grid-row:span 2;font-family:var(--display);font-stretch:125%;font-weight:800;font-size:34px;line-height:1;color:var(--pc)}
+.index b{font-family:var(--display);font-stretch:108%;font-size:18px;font-weight:700}
+.index span{font-size:12px;color:var(--muted);font-family:var(--mono)}
+
+/* sector */
+.sector{border-top:1px solid var(--line);padding:72px 0 24px;scroll-margin-top:56px}
+.sec-head{display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:end;margin-bottom:40px}
+@media (max-width:640px){.sec-head{grid-template-columns:1fr;gap:8px}}
+.sec-num{font-family:var(--display);font-stretch:125%;font-weight:800;font-size:clamp(64px,10vw,120px);line-height:.85;letter-spacing:-.04em;color:var(--pc)}
+.sec-head h2{font-family:var(--display);font-stretch:118%;font-weight:800;font-size:clamp(32px,4.4vw,52px);letter-spacing:-.035em;line-height:1.02;text-wrap:balance}
+.sec-head p{color:var(--muted);max-width:64ch;margin-top:10px}
+
+.proj{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:30px;margin-bottom:18px;scroll-margin-top:72px}
+@media (max-width:520px){.proj{padding:20px}}
+.p-top{display:grid;grid-template-columns:1fr 250px;gap:32px}
+@media (max-width:860px){.p-top{grid-template-columns:1fr;gap:18px}}
+.proj h3{font-family:var(--display);font-stretch:110%;font-size:25px;font-weight:700;letter-spacing:-.02em;line-height:1.25;margin:6px 0 10px;text-wrap:balance}
+.sum{max-width:64ch}
+.proj ul{list-style:none;margin-top:14px;display:grid;gap:7px}
+.proj li{position:relative;padding-left:18px;color:var(--muted);font-size:15px;max-width:68ch}
+.proj li::before{content:"";position:absolute;left:0;top:11px;width:9px;height:1.5px;background:var(--muted)}
+.proj li b{color:var(--ink);font-weight:500}
+.meta{display:grid;gap:12px;align-content:start;font-size:13px}
+.meta dt{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.num{display:grid;gap:12px}
+.num div{border-left:2px solid var(--pc);padding-left:10px}
+.num b{display:block;font-family:var(--display);font-stretch:110%;font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1.2}
+.num span{font-size:12px;color:var(--muted)}
+.chip{display:inline-block;font-family:var(--mono);font-size:11px;padding:2px 7px;border:1px solid var(--line);border-radius:3px;margin:0 4px 4px 0;color:var(--muted)}
+
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:26px;padding-top:22px;border-top:1px dashed var(--line)}
+.gal.wide{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.gal figure{display:flex;flex-direction:column;gap:6px}
+.gal button{display:block;width:100%;aspect-ratio:4/3;border:1px solid var(--line);border-radius:6px;background:#0d1214;padding:6px;cursor:zoom-in;overflow:hidden}
+.gal button img{width:100%;height:100%;object-fit:contain;display:block;border-radius:3px}
+.gal button:hover{border-color:var(--pc)}
+.gal figure.span2{grid-column:span 2}
+.gal figure.span2 button{aspect-ratio:8/3}
+@media (max-width:560px){.gal figure.span2{grid-column:auto}.gal figure.span2 button{aspect-ratio:4/3}}
+.gal figcaption{font-size:12.5px;color:var(--muted);line-height:1.45}
+.gal figcaption b{color:var(--ink);font-weight:500}
+.ph{font-family:var(--mono);font-size:10px;color:var(--pa);border:1px solid var(--pa);border-radius:3px;padding:0 4px;margin-right:4px}
+.gal:not(.open) figure.more{display:none}
+.gal-more{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:14px;padding:11px;font:500 12px var(--mono);letter-spacing:.03em;color:var(--muted);background:transparent;border:1px dashed var(--line);border-radius:8px;cursor:pointer}
+.gal-more:hover{color:var(--ink);border-color:var(--pc)}
+.gal-more[hidden]{display:none}
+.gal-more::after{content:"";width:6px;height:6px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-2px) rotate(45deg);transition:transform .2s}
+.gal-more[aria-expanded="true"]::after{transform:translateY(2px) rotate(-135deg)}
+
+/* instrument */
+.inst{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:18px}
+.inst-head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);gap:12px;flex-wrap:wrap}
+.modes{display:flex;gap:4px;flex-wrap:wrap}
+.modes button{font:500 12px var(--mono);padding:6px 10px;border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:4px;cursor:pointer}
+.modes button:hover{color:var(--ink)}
+.modes button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.inst-body{display:grid;grid-template-columns:1fr 200px}
+@media (max-width:560px){.inst-body{grid-template-columns:1fr}}
+.inst canvas{display:block;width:100%}
+#wave{height:310px}
+#hex{height:200px;border-left:1px solid var(--line)}
+@media (max-width:560px){#hex{border-left:0;border-top:1px solid var(--line)}}
+.side{display:flex;flex-direction:column}
+.readout{padding:12px 16px;display:grid;gap:8px;font-family:var(--mono);font-size:12px;border-left:1px solid var(--line);border-top:1px solid var(--line);flex:1}
+@media (max-width:560px){.readout{border-left:0;grid-template-columns:repeat(3,1fr)}}
+.readout span{display:block;color:var(--muted);font-size:11px}
+.readout b{font-weight:500;font-size:14px;font-variant-numeric:tabular-nums}
+.inst-foot{display:flex;align-items:center;gap:14px;padding:12px 16px;border-top:1px solid var(--line);flex-wrap:wrap}
+.inst-foot label{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.inst-foot input{flex:1;min-width:140px;accent-color:var(--pc)}
+.inst-foot output{font-family:var(--mono);font-size:13px;min-width:40px;text-align:right}
+.legend{display:flex;gap:12px;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:2px;vertical-align:middle;margin-right:5px}
+.inst-note{font-size:13px;color:var(--muted);padding:0 16px 14px;line-height:1.55}
+
+.mgroups{display:flex;gap:18px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--line)}
+.mg{display:flex;flex-direction:column;gap:6px}
+.mg .label{font-size:10.5px}
+.modes button small{display:block;font-size:9.5px;color:inherit;opacity:.7;margin-top:1px}
+.charts{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line)}
+@media (max-width:760px){.charts{grid-template-columns:1fr}}
+.charts>div{padding:12px 14px 6px;border-right:1px solid var(--line)}
+.charts>div:last-child{border-right:0}
+.charts .label{font-size:10.5px;text-transform:none;letter-spacing:.02em}
+.charts .label span{opacity:.7}
+.charts canvas{display:block;width:100%;height:170px}
+.sliders{display:grid!important;grid-template-columns:repeat(3,1fr);gap:10px 22px;align-items:center}
+@media (max-width:900px){.sliders{grid-template-columns:1fr}}
+.sl{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sl input{flex:1;min-width:120px;accent-color:var(--pc)}
+.sl input:disabled{opacity:.4}
+.mini{font:500 11px var(--mono);padding:4px 8px;border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:4px;cursor:pointer}
+.mini:hover{color:var(--ink);border-color:var(--pb)}
+.chk{font-family:var(--mono);font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.chk input{accent-color:var(--pb)}
+#modlab .readout{grid-template-columns:1fr}
+@media (max-width:560px){#modlab .readout{grid-template-columns:repeat(2,1fr)}}
+.tl-list{list-style:none;display:grid;gap:12px}
+.tl-list li{display:flex;align-items:center;gap:12px}
+.badge img{width:100%;height:100%;object-fit:contain;padding:5px}
+.badge.logo{background:#f3f5f6;border-color:#d7dde0}
+.badge.logo.wm img{padding:2px}
+.badge{flex:none;width:40px;height:40px;border-radius:9px;display:grid;place-items:center;font:700 12px var(--mono);letter-spacing:-.02em;color:var(--bc);background:color-mix(in srgb,var(--bc) 14%,transparent);border:1px solid color-mix(in srgb,var(--bc) 45%,transparent)}
+.tl-list b{display:block;font-weight:600;font-size:14.5px;line-height:1.3}
+.tl-tag{display:inline-block;margin-left:8px;padding:1px 6px;font:500 10.5px var(--mono);color:var(--pc);border:1px solid color-mix(in srgb,var(--pc) 45%,transparent);border-radius:4px;vertical-align:2px}
+.tl-list small{display:block;font-family:var(--mono);font-size:11px;color:var(--muted)}
+dialog{border:0;padding:0;background:transparent;max-width:min(1200px,94vw);max-height:92vh;margin:auto}
+dialog::backdrop{background:rgba(3,5,6,.88)}
+dialog img{display:block;max-width:100%;max-height:82vh;margin:0 auto;border-radius:6px}
+dialog p{color:#e4eaec;font-size:14px;text-align:center;margin-top:10px}
+dialog .x{position:absolute;top:8px;right:8px;font:500 12px var(--mono);background:#101517;color:#fff;border:1px solid #445;border-radius:4px;padding:6px 10px;cursor:pointer}
+
+.block{border-top:1px solid var(--line);padding:64px 0}
+.block h2{font-family:var(--display);font-stretch:115%;font-weight:800;font-size:clamp(26px,3.2vw,36px);letter-spacing:-.03em;margin:6px 0 24px}
+.tools{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--panel)}
+@media (max-width:860px){.tools{grid-template-columns:1fr 1fr}}
+@media (max-width:480px){.tools{grid-template-columns:1fr}}
+.tools div{padding:20px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.tools h4{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.tools p{font-size:15px;line-height:1.8}
+.contact{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;border-top:1px solid var(--line);padding:72px 0}
+@media (max-width:760px){.contact{grid-template-columns:1fr}}
+.contact h2{font-family:var(--display);font-stretch:120%;font-weight:800;font-size:clamp(32px,5vw,56px);letter-spacing:-.04em;line-height:1.02;text-wrap:balance}
+.addr{font-family:var(--mono);font-size:15px;border:1px solid var(--ink);padding:12px 16px;border-radius:6px;text-decoration:none;display:inline-block}
+.addr:hover{background:var(--ink);color:var(--bg)}
+footer{padding:0 0 56px;font-family:var(--mono);font-size:12px;color:var(--muted);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="id" href="#top"><span class="dots"><i style="background:var(--pa)"></i><i style="background:var(--pb)"></i><i style="background:var(--pc)"></i></span>JAEHOON LEE</a>
+    <nav id="sitenav" aria-label="Sections"><a href="#heart-sec">Applications</a><a href="#profile">Profile</a><a href="#motor">01 Motor</a><a href="#inverter">02 PWM Inverter</a><a href="#conversion">03 Conversion</a><a href="#dsp">04 DSP</a><a href="#contact">Contact</a></nav>
+    <div class="bar-act">
+      <div class="lang" role="group" aria-label="Language"><button type="button" data-lang="ko" aria-pressed="true">KO</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div>
+      <button type="button" class="menu-btn" id="menuBtn" aria-controls="sitenav" aria-expanded="false" aria-label="메뉴"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero2" id="hero" aria-label="Jaehoon Lee portfolio">
+    <div class="rings" aria-hidden="true"><svg viewBox="0 0 1000 1000" fill="none" stroke="#2a363c" stroke-width="1"><circle cx="500" cy="500" r="480"/><circle cx="500" cy="500" r="430"/><circle cx="500" cy="500" r="400"/><circle cx="500" cy="500" r="300" stroke="#1f292e"/><circle cx="500" cy="500" r="200" stroke-dasharray="2 8"/><line x1="900.0" y1="500.0" x2="930.0" y2="500.0"/><line x1="896.6" y1="552.2" x2="926.3" y2="556.1"/><line x1="886.4" y1="603.5" x2="915.3" y2="611.3"/><line x1="869.6" y1="653.1" x2="897.3" y2="664.6"/><line x1="846.4" y1="700.0" x2="872.4" y2="715.0"/><line x1="817.3" y1="743.5" x2="841.1" y2="761.8"/><line x1="782.8" y1="782.8" x2="804.1" y2="804.1"/><line x1="743.5" y1="817.3" x2="761.8" y2="841.1"/><line x1="700.0" y1="846.4" x2="715.0" y2="872.4"/><line x1="653.1" y1="869.6" x2="664.6" y2="897.3"/><line x1="603.5" y1="886.4" x2="611.3" y2="915.3"/><line x1="552.2" y1="896.6" x2="556.1" y2="926.3"/><line x1="500.0" y1="900.0" x2="500.0" y2="930.0"/><line x1="447.8" y1="896.6" x2="443.9" y2="926.3"/><line x1="396.5" y1="886.4" x2="388.7" y2="915.3"/><line x1="346.9" y1="869.6" x2="335.4" y2="897.3"/><line x1="300.0" y1="846.4" x2="285.0" y2="872.4"/><line x1="256.5" y1="817.3" x2="238.2" y2="841.1"/><line x1="217.2" y1="782.8" x2="195.9" y2="804.1"/><line x1="182.7" y1="743.5" x2="158.9" y2="761.8"/><line x1="153.6" y1="700.0" x2="127.6" y2="715.0"/><line x1="130.4" y1="653.1" x2="102.7" y2="664.6"/><line x1="113.6" y1="603.5" x2="84.7" y2="611.3"/><line x1="103.4" y1="552.2" x2="73.7" y2="556.1"/><line x1="100.0" y1="500.0" x2="70.0" y2="500.0"/><line x1="103.4" y1="447.8" x2="73.7" y2="443.9"/><line x1="113.6" y1="396.5" x2="84.7" y2="388.7"/><line x1="130.4" y1="346.9" x2="102.7" y2="335.4"/><line x1="153.6" y1="300.0" x2="127.6" y2="285.0"/><line x1="182.7" y1="256.5" x2="158.9" y2="238.2"/><line x1="217.2" y1="217.2" x2="195.9" y2="195.9"/><line x1="256.5" y1="182.7" x2="238.2" y2="158.9"/><line x1="300.0" y1="153.6" x2="285.0" y2="127.6"/><line x1="346.9" y1="130.4" x2="335.4" y2="102.7"/><line x1="396.5" y1="113.6" x2="388.7" y2="84.7"/><line x1="447.8" y1="103.4" x2="443.9" y2="73.7"/><line x1="500.0" y1="100.0" x2="500.0" y2="70.0"/><line x1="552.2" y1="103.4" x2="556.1" y2="73.7"/><line x1="603.5" y1="113.6" x2="611.3" y2="84.7"/><line x1="653.1" y1="130.4" x2="664.6" y2="102.7"/><line x1="700.0" y1="153.6" x2="715.0" y2="127.6"/><line x1="743.5" y1="182.7" x2="761.8" y2="158.9"/><line x1="782.8" y1="217.2" x2="804.1" y2="195.9"/><line x1="817.3" y1="256.5" x2="841.1" y2="238.2"/><line x1="846.4" y1="300.0" x2="872.4" y2="285.0"/><line x1="869.6" y1="346.9" x2="897.3" y2="335.4"/><line x1="886.4" y1="396.5" x2="915.3" y2="388.7"/><line x1="896.6" y1="447.8" x2="926.3" y2="443.9"/><path d="M799.6 485.0 A300 300 0 0 1 799.6 515.0" stroke="#ff7a5c" stroke-width="3" opacity=".5"/><path d="M793.3 563.1 A300 300 0 0 1 785.5 592.0" stroke="#f2c23a" stroke-width="3" opacity=".5"/><path d="M767.0 636.8 A300 300 0 0 1 752.0 662.8" stroke="#6aa2ff" stroke-width="3" opacity=".5"/><path d="M722.5 701.3 A300 300 0 0 1 701.3 722.5" stroke="#ff7a5c" stroke-width="3" opacity=".5"/><path d="M662.8 752.0 A300 300 0 0 1 636.8 767.0" stroke="#f2c23a" stroke-width="3" opacity=".5"/><path d="M592.0 785.5 A300 300 0 0 1 563.1 793.3" stroke="#6aa2ff" stroke-width="3" opacity=".5"/><path d="M515.0 799.6 A300 300 0 0 1 485.0 799.6" stroke="#ff7a5c" stroke-width="3" opacity=".5"/><path d="M436.9 793.3 A300 300 0 0 1 408.0 785.5" stroke="#f2c23a" stroke-width="3" opacity=".5"/><path d="M363.2 767.0 A300 300 0 0 1 337.2 752.0" stroke="#6aa2ff" stroke-width="3" opacity=".5"/><path d="M298.7 722.5 A300 300 0 0 1 277.5 701.3" stroke="#ff7a5c" stroke-width="3" opacity=".5"/><path d="M248.0 662.8 A300 300 0 0 1 233.0 636.8" stroke="#f2c23a" stroke-width="3" opacity=".5"/><path d="M214.5 592.0 A300 300 0 0 1 206.7 563.1" stroke="#6aa2ff" stroke-width="3" opacity=".5"/><path d="M200.4 515.0 A300 300 0 0 1 200.4 485.0" stroke="#ff7a5c" stroke-width="3" opacity=".5"/><path d="M206.7 436.9 A300 300 0 0 1 214.5 408.0" stroke="#f2c23a" stroke-width="3" opacity=".5"/><path d="M233.0 363.2 A300 300 0 0 1 248.0 337.2" stroke="#6aa2ff" stroke-width="3" opacity=".5"/><path d="M277.5 298.7 A300 300 0 0 1 298.7 277.5" stroke="#ff7a5c" stroke-width="3" opacity=".5"/><path d="M337.2 248.0 A300 300 0 0 1 363.2 233.0" stroke="#f2c23a" stroke-width="3" opacity=".5"/><path d="M408.0 214.5 A300 300 0 0 1 436.9 206.7" stroke="#6aa2ff" stroke-width="3" opacity=".5"/><path d="M485.0 200.4 A300 300 0 0 1 515.0 200.4" stroke="#ff7a5c" stroke-width="3" opacity=".5"/><path d="M563.1 206.7 A300 300 0 0 1 592.0 214.5" stroke="#f2c23a" stroke-width="3" opacity=".5"/><path d="M636.8 233.0 A300 300 0 0 1 662.8 248.0" stroke="#6aa2ff" stroke-width="3" opacity=".5"/><path d="M701.3 277.5 A300 300 0 0 1 722.5 298.7" stroke="#ff7a5c" stroke-width="3" opacity=".5"/><path d="M752.0 337.2 A300 300 0 0 1 767.0 363.2" stroke="#f2c23a" stroke-width="3" opacity=".5"/><path d="M785.5 408.0 A300 300 0 0 1 793.3 436.9" stroke="#6aa2ff" stroke-width="3" opacity=".5"/></svg></div>
+    <h1 class="mega" aria-label="Portfolio"><span style="--i:0">P</span><span style="--i:1">O</span><span style="--i:2">R</span><span style="--i:3">T</span><span style="--i:4">F</span><span style="--i:5">O</span><span style="--i:6">L</span><span style="--i:7">I</span><span style="--i:8">O</span></h1>
+    <div class="wrap h-top"><span class="label">KUPEL · Korea University</span><span class="label">Power Electronics</span></div>
+    <div class="wrap h-bot">
+      <div class="who">
+        <p class="name">Jaehoon Lee<span>이재훈</span></p>
+        <p class="role"><b>Power Electronics</b> <i>Engineer</i><small>MOTOR DRIVE · INVERTER · DSP</small></p>
+      </div>
+      <nav class="hl" aria-label="Highlights">
+        <a href="#motor" style="--hc:var(--pa)"><span class="n">01</span><b>Motor Control</b><small>DC · IM V/f · FOC · PMSM MTPA</small></a>
+        <a href="#inverter" style="--hc:var(--pb)"><span class="n">02</span><b>PWM Inverter</b><small>GFM black start · SVPWM · DPWM</small></a>
+        <a href="#conversion" style="--hc:var(--pc)"><span class="n">03</span><b>Power Conversion</b><small>Rectifier · SEPIC · LTspice</small></a>
+      </nav>
+    </div>
+  </section>
+
+  <section class="wrap intro" id="heart-sec">
+    <p class="label">Applications</p>
+    <h2 class="h1">The motor is <em>the heart.</em></h2>
+    <p class="lead">모터에서 시작된 current가 <b>power conversion topology</b>를 지나 electric vehicle, data center, aerospace, railway, defense, shipbuilding, robotics, welding으로 흘러갑니다. 한 산업에 머물기보다, 그 모든 길의 공통분모인 <b>motor drive</b>와 <b>power conversion</b>을 깊게 이해하는 generalist가 되려고 합니다.</p>
+    <div class="stage">
+      <canvas id="heart" aria-label="중앙의 모터에서 3상 전류가 converter를 거쳐 여덟 산업의 핵심 모터로 들어가 각 시스템을 구동하는 애니메이션"></canvas>
+      <ol class="apps" id="apps">
+        <li><b>Electric Vehicle</b><span>800 V pack · e-axle · SiC inverter</span></li>
+        <li><b>Data Center</b><span>48 V busway · PSU · CDU pump</span></li>
+        <li><b>Aerospace</b><span>More-electric · 270 VDC · EMA</span></li>
+        <li><b>Railway</b><span>Transformer · converter · bogie</span></li>
+        <li><b>Defense</b><span>Series hybrid · genset · DC bus</span></li>
+        <li><b>Shipbuilding</b><span>Gensets · switchboard · pod drive</span></li>
+        <li><b>Robotics</b><span>Rotary & linear actuators</span></li>
+        <li><b>Welding</b><span>Inverter power stage · wire feed</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="wrap profile" id="profile">
+    <div class="photo"><img src="img/profile.webp" alt="Jaehoon Lee (이재훈) profile photo"></div>
+    <div>
+      <p class="label">Profile</p>
+      <h2>Jaehoon Lee<span>이재훈</span></h2>
+      <p class="tag">From control law to gate signal.</p>
+      <p class="body">Physics와 Electrical &amp; Electronic Engineering을 함께 공부했습니다. motor controller를 설계하고, 그 voltage reference를 inverter의 PWM으로 바꾸고, 다시 DSP register로 옮기는 과정을 직접 modeling하고 measurement하며 익혀왔습니다. 아래의 그림은 모두 제가 만든 model과 결과입니다.</p>
+      <div class="status">
+        <div><p class="k now">Now</p><p><b>Undergraduate Research Intern · Power Electronics Lab (KUPEL), Korea University</b><span>Advisor: Prof. Kibok Lee · Advanced motor drives, SST, WPT, power conversion hardware</span></p></div>
+        <div><p class="k">Next</p><p><b>M.S. program, Power Electronics Lab, Korea University</b><span>석사과정 입학 예정</span></p></div>
+        <div><p class="k">Education</p><p><b>B.S. Physics · B.S. Electrical &amp; Electronic Engineering (Double Major)</b><span>Yonsei University · 2027.02 졸업 예정</span></p></div>
+      </div>
+      <div class="facts">
+        <div><strong>4.48<small> /4.5</small></strong><span>Physics Major GPA</span></div>
+        <div><strong>4.06<small> /4.5</small></strong><span>EEE Major GPA</span></div>
+        <div><strong>SCS<small> 2025</small></strong><span>Publication · Co-author</span></div>
+      </div>
+      <p class="pub"><i>Online coupling of an urban canopy model with trees and a mesoscale atmospheric model to assess the cooling effects of trees under different urban configurations and varying soil dryness</i>, Sustainable Cities and Society, 2025.</p>
+    </div>
+  </section>
+
+  <section class="wrap what" aria-label="What I work on">
+    <div class="what-head"><p class="label">The toolkit / What I build</p><h2>WHAT I<br>WORK ON</h2></div>
+    <nav class="rows" aria-label="섹터 목록">
+      <a href="#motor"><span class="n">01</span><b>Motor Control</b><span>DC · Induction · PMSM · FOC</span></a>
+      <a href="#inverter"><span class="n">02</span><b>PWM Inverter</b><span>GFM thesis · SVPWM · DPWM · Loss · Harmonics</span></a>
+      <a href="#conversion"><span class="n">03</span><b>Power Conversion</b><span>Rectifier · SEPIC · LTspice</span></a>
+      <a href="#dsp"><span class="n">04</span><b>DSP Firmware</b><span>TI C2000 · ePWM · Dead time · Trip-Zone · ADC</span></a>
+    </nav>
+  </section>
+
+  <!-- ===================== 01 MOTOR ===================== -->
+  <section class="sector" id="motor">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-num">01</div>
+        <div>
+          <p class="label">Sector</p>
+          <h2>Motor Control</h2>
+        </div>
+      </div>
+
+      <article class="proj" id="p-dc">
+        <div class="p-top">
+          <div>
+            <p class="label">M1 · PMDC Motor</p>
+            <h3>PMDC Motor: Current &amp; Speed Control with a 4-Quadrant Chopper</h3>
+            <p class="sum">motor와 load를 modeling한 뒤 inner current loop부터 outer speed loop까지 안에서 바깥으로 쌓았습니다.</p>
+            <ul>
+              <li><b>PI current controller</b>에 back-EMF <b>feedforward compensation</b>과 <b>anti-windup</b>을 더하고, bandwidth를 2배로 올렸을 때 settling이 빨라지는 것을 확인</li>
+              <li>current loop bandwidth는 switching frequency의 1/20, sampling frequency의 1/25 이하로, speed loop는 current loop의 1/5로 설계</li>
+              <li><b>PI vs IP speed controller</b>: PI는 rise time이 짧지만 overshoot가 있고, IP는 overshoot 없이 느림</li>
+              <li>4-quadrant chopper에서 <b>unipolar / bipolar PWM</b>의 worst-case current ripple을 손으로 계산하고 simulation과 비교</li>
+            </ul>
+          </div>
+          <dl class="meta">
+            <div class="num"><div><b>×2</b><span>current loop bandwidth 비교</span></div><div><b>PI vs IP</b><span>speed controller response</span></div></div>
+            <div><dt>Tools</dt><dd><span class="chip">Simulink</span><span class="chip">MATLAB</span></dd></div>
+          </dl>
+        </div>
+        <div class="gal">
+          <figure class="span2"><button type="button"><img src="img/m-dc-model.webp" alt="PI current controller를 포함한 PMDC drive Simulink model" loading="lazy"></button><figcaption><b>Simulink model</b> · PI current controller를 포함한 drive system</figcaption></figure>
+          <figure><button type="button"><img src="img/m-dc-bw1.webp" alt="기준 bandwidth current response" loading="lazy"></button><figcaption><b>Current response</b> · baseline bandwidth</figcaption></figure>
+          <figure><button type="button"><img src="img/m-dc-bw2.webp" alt="bandwidth 2배 current response" loading="lazy"></button><figcaption><b>Current response</b> · 2× bandwidth, faster settling</figcaption></figure>
+          <figure><button type="button"><img src="img/m-dc-pi.webp" alt="PI speed controller response" loading="lazy"></button><figcaption><b>PI speed control</b> · fast rise, overshoot</figcaption></figure>
+          <figure><button type="button"><img src="img/m-dc-ip.webp" alt="IP speed controller response" loading="lazy"></button><figcaption><b>IP speed control</b> · no overshoot, slower rise</figcaption></figure>
+          <figure><button type="button"><img src="img/m-dc-ripple.webp" alt="4-quadrant chopper current ripple" loading="lazy"></button><figcaption><b>Current ripple</b> · 4-quadrant chopper</figcaption></figure>
+        
+          <figure><button type="button"><img src="img/r-ch2_s37_1.webp" alt="Unipolar PWM switching pattern" loading="lazy"></button><figcaption><b>Unipolar PWM</b> · switching pattern</figcaption></figure>
+          <figure><button type="button"><img src="img/r-ch2_s37_3.webp" alt="Unipolar PWM chopper output voltage" loading="lazy"></button><figcaption><b>Unipolar PWM</b> · chopper output voltage</figcaption></figure>
+          <figure><button type="button"><img src="img/r-ch2_s37_4.webp" alt="Unipolar PWM voltage & armature current" loading="lazy"></button><figcaption><b>Unipolar PWM</b> · voltage & armature current</figcaption></figure>
+          <figure><button type="button"><img src="img/r-ch2_s38_1.webp" alt="Bipolar PWM voltage & armature current" loading="lazy"></button><figcaption><b>Bipolar PWM</b> · voltage & armature current</figcaption></figure>
+          <figure><button type="button"><img src="img/r-ch2_s37_6.webp" alt="Chopper drive current response with data tips" loading="lazy"></button><figcaption><b>Chopper drive</b> · current response with data tips</figcaption></figure>
+        </div>
+      </article>
+
+      <article class="proj" id="p-im">
+        <div class="p-top">
+          <div>
+            <p class="label">M2 · Induction Motor</p>
+            <h3>Induction Motor: dq Modeling &amp; V/f Control</h3>
+            <p class="sum">6개 winding의 flux linkage에서 출발해 reference frame transformation으로 dq voltage·flux equation을 세우고, 4-pole 3 HP 220 V induction motor model을 만들었습니다.</p>
+            <ul>
+              <li>start-up 시 dq current, flux linkage, torque, speed 파형으로 transient response 확인</li>
+              <li>closed-loop <b>constant V/f control</b>의 transfer function을 직접 유도하고 final value theorem으로 steady-state error 확인</li>
+              <li>PI gain, bandwidth, damping ratio를 정하고 2nd-order low-pass 특성을 <b>Bode plot</b>으로 검증</li>
+            </ul>
+          </div>
+          <dl class="meta">
+            <div class="num"><div><b>3 HP</b><span>4-pole · 220 V model</span></div></div>
+            <div><dt>Tools</dt><dd><span class="chip">Simulink</span><span class="chip">MATLAB</span></dd></div>
+          </dl>
+        </div>
+        <div class="gal">
+          <figure class="span2"><button type="button"><img src="img/m-im-model.webp" alt="induction motor dq model Simulink" loading="lazy"></button><figcaption><b>dq model</b> · induction motor in Simulink</figcaption></figure>
+          <figure><button type="button"><img src="img/m-im-torque.webp" alt="start-up torque" loading="lazy"></button><figcaption><b>Start-up torque</b> · transient to steady state</figcaption></figure>
+          <figure class="span2"><button type="button"><img src="img/m-im-vf.webp" alt="V/f control system Simulink" loading="lazy"></button><figcaption><b>V/f control</b> · closed-loop speed control</figcaption></figure>
+          <figure><button type="button"><img src="img/m-im-bode.webp" alt="controller Bode plot" loading="lazy"></button><figcaption><b>Bode plot</b> · 2nd-order low-pass</figcaption></figure>
+        
+          <figure><button type="button"><img src="img/r-ch5_s13_1.webp" alt="Three-phase input voltage" loading="lazy"></button><figcaption><b>Three-phase input</b> · voltage</figcaption></figure>
+          <figure><button type="button"><img src="img/r-ch5_s13_3.webp" alt="Rotor speed start-up to rated rpm" loading="lazy"></button><figcaption><b>Rotor speed</b> · start-up to rated rpm</figcaption></figure>
+          <figure><button type="button"><img src="img/r-ch5_s14_1.webp" alt="dq current transient" loading="lazy"></button><figcaption><b>dq current</b> · transient</figcaption></figure>
+          <figure><button type="button"><img src="img/r-ch5_s14_2.webp" alt="dq current transient" loading="lazy"></button><figcaption><b>dq current</b> · transient</figcaption></figure>
+          <figure><button type="button"><img src="img/r-ch5_s15_2.webp" alt="Flux linkage dq axis" loading="lazy"></button><figcaption><b>Flux linkage</b> · dq axis</figcaption></figure>
+          <figure><button type="button"><img src="img/r-ch5_s15_4.webp" alt="Flux linkage dq axis" loading="lazy"></button><figcaption><b>Flux linkage</b> · dq axis</figcaption></figure>
+          <figure><button type="button"><img src="img/r-ch4_s17_2.webp" alt="V/f control speed response" loading="lazy"></button><figcaption><b>V/f control</b> · speed response</figcaption></figure>
+          <figure><button type="button"><img src="img/r-ch4_s18_2.webp" alt="V/f control speed tracking" loading="lazy"></button><figcaption><b>V/f control</b> · speed tracking</figcaption></figure>
+        </div>
+      </article>
+
+      <article class="proj" id="p-vc">
+        <div class="p-top">
+          <div>
+            <p class="label">M3 · Induction Motor</p>
+            <h3>Indirect Vector Control (Field-Oriented Control)</h3>
+            <p class="sum">DC motor처럼 flux와 torque를 독립적으로 제어하기 위한 조건을 정리하고, slip calculator와 세 개의 controller를 직접 구성했습니다.</p>
+            <ul>
+              <li><b>slip angular frequency calculator</b>, flux controller, speed controller, <b>synchronous-frame current controller</b>를 단계별로 구현</li>
+              <li><b>flux controller bandwidth</b> 3 rad/s와 10 rad/s의 response 비교</li>
+              <li>d-q <b>cross-coupling</b>과 back-EMF를 <b>feedforward voltage</b>로 제거</li>
+            </ul>
+          </div>
+          <dl class="meta">
+            <div class="num"><div><b>3 vs 10</b><span>flux loop bandwidth [rad/s]</span></div></div>
+            <div><dt>Tools</dt><dd><span class="chip">Simulink</span></dd></div>
+          </dl>
+        </div>
+        <div class="gal">
+          <figure class="span2"><button type="button"><img src="img/m-vc-model.webp" alt="synchronous-frame current controller Simulink" loading="lazy"></button><figcaption><b>Current controller</b> · d-q feedforward 포함</figcaption></figure>
+          <figure><button type="button"><img src="img/m-vc-flux3.webp" alt="flux response 3 rad/s" loading="lazy"></button><figcaption><b>Flux response</b> · 3 rad/s</figcaption></figure>
+          <figure><button type="button"><img src="img/m-vc-flux10.webp" alt="flux response 10 rad/s" loading="lazy"></button><figcaption><b>Flux response</b> · 10 rad/s</figcaption></figure>
+          <figure><button type="button"><img src="img/m-vc-torque.webp" alt="vector control simulation result" loading="lazy"></button><figcaption><b>Simulation result</b> · load step response</figcaption></figure>
+        
+          <figure><button type="button"><img src="img/r-ch6_s05_1.webp" alt="Simulink model indirect vector control system" loading="lazy"></button><figcaption><b>Simulink model</b> · indirect vector control system</figcaption></figure>
+          <figure><button type="button"><img src="img/r-ch6_s13_1.webp" alt="Speed response vector control" loading="lazy"></button><figcaption><b>Speed response</b> · vector control</figcaption></figure>
+          <figure><button type="button"><img src="img/r-ch6_s14_1.webp" alt="Torque & current vector control" loading="lazy"></button><figcaption><b>Torque & current</b> · vector control</figcaption></figure>
+          <figure><button type="button"><img src="img/r-ch6_s14_2.webp" alt="Speed ramp vector control" loading="lazy"></button><figcaption><b>Speed ramp</b> · vector control</figcaption></figure>
+        </div>
+      </article>
+
+      <article class="proj" id="p-pm">
+        <div class="p-top">
+          <div>
+            <p class="label">M4 · SPMSM / IPMSM</p>
+            <h3>PMSM: MTPA Control &amp; Discrete-Time Controller</h3>
+            <p class="sum">reluctance torque 유무에 따라 같은 torque를 최소 current로 내는 current reference가 어떻게 달라지는지 비교하고, continuous-time controller를 discrete-time으로 옮겼습니다.</p>
+            <ul>
+              <li>SPMSM은 i<sub>d</sub>* = 0, IPMSM은 torque reference에 따른 d-q current reference를 <b>LUT</b>로 구현</li>
+              <li>torque reference와 actual torque, current reference와 actual current를 비교해 tracking 확인</li>
+              <li>PI controller를 <b>discrete-time</b>으로 바꿔 digital implementation을 가정한 결과 확인</li>
+            </ul>
+          </div>
+          <dl class="meta">
+            <div class="num"><div><b>MTPA</b><span>SPMSM vs IPMSM</span></div></div>
+            <div><dt>Tools</dt><dd><span class="chip">Simulink</span></dd></div>
+          </dl>
+        </div>
+        <div class="gal wide">
+          <figure class="span2"><button type="button"><img src="img/m-pm-model.webp" alt="IPMSM vector control Simulink model" loading="lazy"></button><figcaption><b>IPMSM model</b> · speed controller &amp; MTPA block</figcaption></figure>
+          <figure><button type="button"><img src="img/m-pm-resp.webp" alt="IPMSM reference tracking" loading="lazy"></button><figcaption><b>IPMSM response</b> · reference tracking</figcaption></figure>
+          <figure><button type="button"><img src="img/m-pm-disc.webp" alt="discrete-time PI block" loading="lazy"></button><figcaption><b>Discrete-time PI</b> block</figcaption></figure>
+          <figure><button type="button"><img src="img/m-pm-dres.webp" alt="discrete controller result" loading="lazy"></button><figcaption><b>Discrete controller</b> result</figcaption></figure>
+        
+          <figure><button type="button"><img src="img/r-pmsm_s11_1.webp" alt="Speed ramp to 1730 rpm" loading="lazy"></button><figcaption><b>Speed</b> · ramp to 1730 rpm</figcaption></figure>
+          <figure><button type="button"><img src="img/r-pmsm_s11_3.webp" alt="SPMSM q-axis current" loading="lazy"></button><figcaption><b>SPMSM</b> · q-axis current</figcaption></figure>
+          <figure><button type="button"><img src="img/r-pmsm_s11_6.webp" alt="SPMSM torque steps 1·3·5" loading="lazy"></button><figcaption><b>SPMSM</b> · torque steps 1·3·5</figcaption></figure>
+          <figure><button type="button"><img src="img/r-pmsm_s13_3.webp" alt="IPMSM d-axis current (MTPA)" loading="lazy"></button><figcaption><b>IPMSM</b> · d-axis current (MTPA)</figcaption></figure>
+          <figure><button type="button"><img src="img/r-pmsm_s13_5.webp" alt="IPMSM q-axis current" loading="lazy"></button><figcaption><b>IPMSM</b> · q-axis current</figcaption></figure>
+          <figure><button type="button"><img src="img/r-pmsm_s13_7.webp" alt="IPMSM torque" loading="lazy"></button><figcaption><b>IPMSM</b> · torque</figcaption></figure>
+          <figure><button type="button"><img src="img/r-pmsm_s16_6.webp" alt="Discrete controller q-axis current" loading="lazy"></button><figcaption><b>Discrete controller</b> · q-axis current</figcaption></figure>
+          <figure><button type="button"><img src="img/r-pmsm_s16_8.webp" alt="Discrete controller torque" loading="lazy"></button><figcaption><b>Discrete controller</b> · torque</figcaption></figure>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===================== 02 INVERTER ===================== -->
+  <section class="sector" id="inverter">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-num">02</div>
+        <div>
+          <p class="label">Sector</p>
+          <h2>PWM Inverter</h2>
+          <p>controller가 만든 voltage reference를 switching으로 바꾸는 단계입니다. modulation 기법을 직접 구현하고, 논문을 읽으며 switching loss와 harmonics를 정량적으로 비교했습니다.</p>
+        </div>
+      </div>
+
+
+      <article class="proj" id="p-thesis">
+        <div class="p-top">
+          <div>
+            <p class="label">B.S. Thesis · Smart Grid Lab, Yonsei University <span class="src">THESIS</span></p>
+            <h3>Grid-Forming ESS-Based Black Start for a Radial-Vulnerable 154 kV Substation: A Case Study of Jangyeon Substation</h3>
+            <p class="sum">장연 변전소는 154 kV 송전선 2회선으로 연결돼 있지만 분기점 이후 공용 철탑 구간 때문에 사실상 방사형처럼 취약합니다. 이 구간에 고장이 나면 변전소가 고립되는데, 22.9 kV 배전선에 연계된 PV inverter는 대부분 <b>grid-following(GFL)</b>이라 스스로 전압을 세우지 못합니다. 22.9 kV bus에 <b>grid-forming(GFM) ESS</b>를 두고 black start가 가능한지 검증했습니다.</p>
+            <ul>
+              <li><b>PSS/E</b> static power flow로 장연 변전소가 고립돼도 주계통은 정상임을 확인해 문제를 local restoration으로 좁히고, 3φ fault로 short-circuit capacity 3369.75 MVA, Thevenin impedance 7.038 Ω, X/R 9.14를 추출</li>
+              <li>이를 바탕으로 <b>PSCAD/EMTDC</b>에 주계통 equivalent source + RRL, 154/22.9 kV transformer, 부하, PV feeder, ESS로 구성된 EMT 모델 구축</li>
+              <li>t = 3.0 s 철탑 3φ fault 후 고립 상황에서 <b>GFL</b>은 PLL 동기를 잃고 70 MW / 75 MVar surge, 1.2 kA device current peak, 48~72 Hz 진동 끝에 붕괴</li>
+              <li><b>VSM + droop 기반 GFM ESS</b>(20 MW, J = 0.01, D = 0.3)는 dead bus에서 전압을 세워 overshoot 없이 18 ms 만에 0.9 pu, 20 ms 만에 ±2% 안정, RoCoF 0 Hz/s로 10 MW 부하 복구</li>
+              <li>current limiting loop로 device current peak를 0.068 kA로 제한해 GFL 대비 약 1/17.6로 stress 감소</li>
+            </ul>
+            <p class="pub" style="margin-top:12px">Jaehoon Lee, Seonghun Kim, Kyeon Hur · Department of Electrical and Electronic Engineering, Yonsei University</p>
+          </div>
+          <dl class="meta">
+            <div class="num">
+              <div><b>18 ms</b><span>GFM voltage recovery (≥ 0.9 pu)</span></div>
+              <div><b>1/17.6</b><span>device current stress vs GFL</span></div>
+              <div><b>3369.75 MVA</b><span>SSC at 154 kV Jangyeon bus</span></div>
+            </div>
+            <div><dt>Tools</dt><dd><span class="chip">PSS/E</span><span class="chip">PSCAD/EMTDC</span></dd></div>
+          </dl>
+        </div>
+        <div class="gal">
+          <figure class="span2"><button type="button"><img src="img/t-sys.webp" alt="PSS/E one-line transmission system around Jangyeon" loading="lazy"></button><figcaption><b>PSS/E one-line</b> · transmission system around Jangyeon</figcaption></figure>
+          <figure><button type="button"><img src="img/t-pscad.webp" alt="PSCAD equivalent model grid · transformer · PV · ESS" loading="lazy"></button><figcaption><b>PSCAD equivalent model</b> · grid · transformer · PV · ESS</figcaption></figure>
+          <figure><button type="button"><img src="img/t-gfl-res.webp" alt="GFL under isolation load V · P · Q stays collapsed" loading="lazy"></button><figcaption><b>GFL under isolation</b> · load V · P · Q stays collapsed</figcaption></figure>
+          <figure><button type="button"><img src="img/t-gfm-res.webp" alt="GFM black start load voltage & power restored" loading="lazy"></button><figcaption><b>GFM black start</b> · load voltage & power restored</figcaption></figure>
+          <figure><button type="button"><img src="img/t-ess.webp" alt="GFM ESS output V · P · Q of the ESS" loading="lazy"></button><figcaption><b>GFM ESS output</b> · V · P · Q of the ESS</figcaption></figure>
+          <figure><button type="button"><img src="img/t-gfm.webp" alt="GFM control power sync · voltage · current loops" loading="lazy"></button><figcaption><b>GFM control</b> · power sync · voltage · current loops</figcaption></figure>
+        </div>
+      </article>
+
+      <figure class="inst" id="modlab" aria-label="PWM lab: carrier-based modulation with offset voltage">
+        <div class="inst-head">
+          <span class="label">PWM Lab · carrier-based PWM with offset voltage</span>
+          <span class="label" style="color:var(--pb)" id="mName">SVPWM</span>
+        </div>
+        <div class="mgroups">
+          <div class="mg"><span class="label">Continuous</span><div class="modes" role="group" aria-label="continuous PWM">
+            <button type="button" data-m="spwm" aria-pressed="false">SPWM</button><button type="button" data-m="thipwm" aria-pressed="false">THIPWM</button><button type="button" data-m="svpwm" aria-pressed="true">SVPWM</button></div></div>
+          <div class="mg"><span class="label">Discontinuous</span><div class="modes" role="group" aria-label="discontinuous PWM">
+            <button type="button" data-m="dpwm0" aria-pressed="false">DPWM0<small>60°−30°</small></button><button type="button" data-m="dpwm1" aria-pressed="false">DPWM1<small>60°</small></button><button type="button" data-m="dpwm2" aria-pressed="false">DPWM2<small>60°+30°</small></button><button type="button" data-m="dpwm3" aria-pressed="false">DPWM3<small>30°×2</small></button><button type="button" data-m="dpwmmax" aria-pressed="false">DPWMMAX<small>120°</small></button><button type="button" data-m="dpwmmin" aria-pressed="false">DPWMMIN<small>120°</small></button><button type="button" data-m="gdpwm" aria-pressed="false">GDPWM<small>ψ</small></button></div></div>
+        </div>
+        <div class="inst-body">
+          <canvas id="wave" aria-label="pole voltage references, offset voltage, phase current and phase-a gate signal"></canvas>
+          <div class="side">
+            <canvas id="hex" aria-label="space vector hexagon"></canvas>
+            <div class="readout">
+              <div><span>M<sub>i</sub></span><b id="rMi">0.90</b></div>
+              <div><span>Region</span><b id="rState">Linear</b></div>
+              <div><span>Clamp / cycle</span><b id="rClampDeg">0°</b></div>
+              <div><span>Switching events</span><b id="rSw">100 %</b></div>
+              <div><span>SLF @ φ</span><b id="rSlf">1.00</b></div>
+              <div><span>Harm. flux vs SVPWM</span><b id="rHf">×1.00</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="charts">
+          <div><p class="label">Switching loss function vs load angle φ <span>(phase a, normalized to CPWM)</span></p><canvas id="slf"></canvas></div>
+          <div><p class="label">Harmonic flux RMS vs M<sub>i</sub> <span>(phase voltage, f<sub>c</sub>/f<sub>1</sub> = 36)</span></p><canvas id="hdf"></canvas></div>
+        </div>
+        <div class="inst-foot sliders">
+          <div class="sl"><label for="mi">Modulation index M<sub>i</sub></label><input id="mi" type="range" min="0.1" max="1.2" step="0.01" value="0.9"><output id="miOut" for="mi">0.90</output></div>
+          <div class="sl"><label for="phi">Load angle φ</label><input id="phi" type="range" min="-90" max="90" step="1" value="30"><output id="phOut" for="phi">30°</output></div>
+          <div class="sl" id="psWrap"><label for="psi">GDPWM ψ</label><input id="psi" type="range" min="0" max="60" step="1" value="60"><output id="psOut" for="psi">60°</output><button type="button" class="mini" id="psAlign">ψ = 30° + φ</button></div>
+          <label class="chk"><input type="checkbox" id="eqsw"><span>Equal switching count (DPWM f<sub>c</sub> × 3/2)</span></label>
+          <div class="legend"><span><i style="background:var(--pa)"></i>a</span><span><i style="background:var(--pb)"></i>b</span><span><i style="background:var(--pc)"></i>c</span><span><i style="background:var(--muted)"></i>offset</span><span><i style="background:#e9eef0"></i>i<sub>a</sub></span></div>
+        </div>
+        <figcaption class="inst-note" id="mDesc"></figcaption>
+      </figure>
+
+      <article class="proj" id="p-inv">
+        <div class="p-top">
+          <div>
+            <p class="label">I1 · Three-phase Inverter</p>
+            <h3>Three-Phase Inverter for IPMSM: SPWM, SVPWM &amp; Offset-Voltage SVPWM</h3>
+            <p class="sum">switch model부터 modulator까지 block을 하나씩 만들어 IPMSM을 실제로 구동했습니다.</p>
+            <ul>
+              <li><b>SPWM</b>: pole voltage reference와 triangular carrier 비교, 3상 phase voltage의 합이 0인지 확인</li>
+              <li><b>SVPWM</b>: angle에서 sector와 local angle을 구하고, T<sub>0</sub>·T<sub>1</sub>·T<sub>2</sub>와 duty를 MATLAB function으로 계산</li>
+              <li><b>Offset-voltage SVPWM</b>: max·min phase voltage로 offset을 구해 같은 결과를 더 간단하게 구현</li>
+            </ul>
+          </div>
+          <dl class="meta">
+            <div class="num"><div><b>3</b><span>modulation methods</span></div></div>
+            <div><dt>Tools</dt><dd><span class="chip">Simulink</span><span class="chip">MATLAB</span></dd></div>
+          </dl>
+        </div>
+        <div class="gal">
+          <figure class="span2"><button type="button"><img src="img/i-model.webp" alt="three-phase inverter IPMSM drive Simulink" loading="lazy"></button><figcaption><b>Full model</b> · inverter + IPMSM drive</figcaption></figure>
+          <figure><button type="button"><img src="img/i-spwm.webp" alt="SPWM carrier comparison" loading="lazy"></button><figcaption><b>SPWM</b> · carrier comparison &amp; pole voltage</figcaption></figure>
+          <figure><button type="button"><img src="img/i-svcode.webp" alt="SVPWM sector switching time MATLAB code" loading="lazy"></button><figcaption><span class="ph">Code</span><b>SVPWM</b> · switching time per sector</figcaption></figure>
+          <figure><button type="button"><img src="img/i-duty.webp" alt="SVPWM duty" loading="lazy"></button><figcaption><b>SVPWM duty</b> · phase a·b·c</figcaption></figure>
+          <figure><button type="button"><img src="img/i-offcode.webp" alt="offset voltage MATLAB function" loading="lazy"></button><figcaption><span class="ph">Code</span><b>Offset voltage</b> function</figcaption></figure>
+          <figure><button type="button"><img src="img/i-offwave.webp" alt="offset SVPWM waveform" loading="lazy"></button><figcaption><b>Offset SVPWM</b> · pole voltage reference</figcaption></figure>
+          <figure><button type="button"><img src="img/i-cur.webp" alt="motor three-phase current" loading="lazy"></button><figcaption><b>Motor phase current</b></figcaption></figure>
+        
+          <figure><button type="button"><img src="img/r-inv_s13_3.webp" alt="SPWM motor phase current" loading="lazy"></button><figcaption><b>SPWM</b> · motor phase current</figcaption></figure>
+          <figure><button type="button"><img src="img/r-inv_s16_1.webp" alt="SPWM pole voltage per phase" loading="lazy"></button><figcaption><b>SPWM</b> · pole voltage per phase</figcaption></figure>
+          <figure><button type="button"><img src="img/r-inv_s17_1.webp" alt="SPWM gate signals" loading="lazy"></button><figcaption><b>SPWM</b> · gate signals</figcaption></figure>
+          <figure><button type="button"><img src="img/r-inv_s21_1.webp" alt="SVPWM motor phase current" loading="lazy"></button><figcaption><b>SVPWM</b> · motor phase current</figcaption></figure>
+          <figure><button type="button"><img src="img/r-inv_s22_1.webp" alt="SVPWM angle & sector" loading="lazy"></button><figcaption><b>SVPWM</b> · angle & sector</figcaption></figure>
+          <figure><button type="button"><img src="img/r-inv_s22_2.webp" alt="SVPWM sector timing" loading="lazy"></button><figcaption><b>SVPWM</b> · sector timing</figcaption></figure>
+          <figure><button type="button"><img src="img/r-inv_s24_1.webp" alt="SVPWM switching sequence" loading="lazy"></button><figcaption><b>SVPWM</b> · switching sequence</figcaption></figure>
+          <figure><button type="button"><img src="img/r-inv_s25_1.webp" alt="SVPWM carrier & duty" loading="lazy"></button><figcaption><b>SVPWM</b> · carrier & duty</figcaption></figure>
+          <figure><button type="button"><img src="img/r-inv_s29_1.webp" alt="Offset SVPWM carrier comparison" loading="lazy"></button><figcaption><b>Offset SVPWM</b> · carrier comparison</figcaption></figure>
+          <figure><button type="button"><img src="img/r-inv_s29_2.webp" alt="Offset SVPWM gate signals" loading="lazy"></button><figcaption><b>Offset SVPWM</b> · gate signals</figcaption></figure>
+        </div>
+      </article>
+
+      <article class="proj" id="p-gd">
+        <div class="p-top">
+          <div>
+            <p class="label">I2 · Paper Study · Switching Loss</p>
+            <h3>GDPWM vs MLDPWM: Switching Loss, Theory vs Simulation</h3>
+            <p class="sum">Hava, Kerkman, Lipo의 GDPWM 논문을 읽고, 해석적으로 구한 <b>switching loss function</b>이 실제 switching event에서도 같은 결과를 내는지 확인했습니다.</p>
+            <ul>
+              <li>두 방식의 <b>clamping interval</b>과 switching instant 차이를 offset voltage 관점에서 정리</li>
+              <li>switching instant를 detect하고 그때의 current로 event별 energy를 구해, 0.1 s 동안의 <b>average switching loss</b> 계산</li>
+              <li>CPWM, GDPWM, MLDPWM의 loss function을 power factor angle에 따라 이론 곡선과 비교</li>
+            </ul>
+          </div>
+          <dl class="meta">
+            <div class="num"><div><b>3</b><span>modulators compared</span></div><div><b>6 steps</b><span>loss calculation pipeline</span></div></div>
+            <div><dt>Tools</dt><dd><span class="chip">Simulink</span><span class="chip">MATLAB</span></dd></div>
+          </dl>
+        </div>
+        <div class="gal">
+          <figure><button type="button"><img src="img/g-model.webp" alt="CPWM, MLDPWM, GDPWM comparison model" loading="lazy"></button><figcaption><b>Comparison model</b> · three modulators</figcaption></figure>
+          <figure><button type="button"><img src="img/g-pole.webp" alt="pole voltage reference waveform" loading="lazy"></button><figcaption><b>Pole voltage reference</b> · clamping vs power factor</figcaption></figure>
+          <figure><button type="button"><img src="img/g-slf.webp" alt="switching loss function theory vs simulation" loading="lazy"></button><figcaption><b>Switching loss function</b> · theory vs simulation</figcaption></figure>
+          <figure><button type="button"><img src="img/g-slf2.webp" alt="normalized switching loss" loading="lazy"></button><figcaption><b>Normalized loss</b> comparison</figcaption></figure>
+          <figure><button type="button"><img src="img/g-gate.webp" alt="gate signals" loading="lazy"></button><figcaption><b>Gate signals</b> · clamping interval</figcaption></figure>
+        
+          <figure><button type="button"><img src="img/r-gdpwm_s05_1.webp" alt="Pole voltage reference φ = 75°" loading="lazy"></button><figcaption><b>Pole voltage reference</b> · φ = 75°</figcaption></figure>
+          <figure><button type="button"><img src="img/r-gdpwm_s08_1.webp" alt="Pole voltage reference different power factor" loading="lazy"></button><figcaption><b>Pole voltage reference</b> · different power factor</figcaption></figure>
+          <figure><button type="button"><img src="img/r-gdpwm_s10_1.webp" alt="Switching loss function GDPWM vs virtual-voltage DPWM" loading="lazy"></button><figcaption><b>Switching loss function</b> · GDPWM vs virtual-voltage DPWM</figcaption></figure>
+          <figure><button type="button"><img src="img/r-gdpwm_s15_2.webp" alt="Measured switching loss power vs φ" loading="lazy"></button><figcaption><b>Measured switching loss</b> · power vs φ</figcaption></figure>
+          <figure><button type="button"><img src="img/r-gdpwm_s16_1.webp" alt="Normalized loss theory vs simulation" loading="lazy"></button><figcaption><b>Normalized loss</b> · theory vs simulation</figcaption></figure>
+          <figure><button type="button"><img src="img/r-gdpwm_s17_2.webp" alt="Gate signals clamping interval" loading="lazy"></button><figcaption><b>Gate signals</b> · clamping interval</figcaption></figure>
+        </div>
+      </article>
+
+      <article class="proj" id="p-hm">
+        <div class="p-top">
+          <div>
+            <p class="label">I3 · Paper Study · Harmonics</p>
+            <h3>DPWM Family: Switching-Frequency Harmonic Analysis</h3>
+            <p class="sum">zero vector를 어떻게 나눠 쓰느냐에 따라 <b>harmonic flux</b>가 어떻게 달라지는지 해석적으로 따라가며 그래프로 재현했습니다.</p>
+            <ul>
+              <li>DPWM0~3, MIN, MAX의 <b>zero-state partitioning</b>을 hexagon 위에 직접 그려 정리</li>
+              <li>half carrier cycle의 harmonic flux trajectory와 RMS, fundamental cycle의 <b>harmonic distortion function</b> 계산</li>
+              <li>modulation index에 따른 phase current harmonic RMS 비교</li>
+            </ul>
+          </div>
+          <dl class="meta">
+            <div class="num"><div><b>6</b><span>DPWM variants</span></div></div>
+            <div><dt>Tools</dt><dd><span class="chip">MATLAB</span></dd></div>
+          </dl>
+        </div>
+        <div class="gal">
+          <figure><button type="button"><img src="img/h-traj.webp" alt="harmonic flux trajectory" loading="lazy"></button><figcaption><b>Harmonic flux trajectory</b></figcaption></figure>
+          <figure><button type="button"><img src="img/h-hdf.webp" alt="harmonic distortion function" loading="lazy"></button><figcaption><b>Harmonic distortion function</b></figcaption></figure>
+          <figure><button type="button"><img src="img/h-rms.webp" alt="phase current harmonic RMS" loading="lazy"></button><figcaption><b>Phase current harmonic RMS</b></figcaption></figure>
+        
+          <figure><button type="button"><img src="img/r-harm_s05_2.webp" alt="Harmonic flux trajectory SVPWM vs DPWM" loading="lazy"></button><figcaption><b>Harmonic flux trajectory</b> · SVPWM vs DPWM</figcaption></figure>
+          <figure><button type="button"><img src="img/r-harm_s06_1.webp" alt="RMS harmonic flux half carrier cycle" loading="lazy"></button><figcaption><b>RMS harmonic flux</b> · half carrier cycle</figcaption></figure>
+          <figure><button type="button"><img src="img/r-harm_s07_2.webp" alt="Harmonic distortion function k = 0.667" loading="lazy"></button><figcaption><b>Harmonic distortion function</b> · k = 0.667</figcaption></figure>
+          <figure><button type="button"><img src="img/r-harm_s08_1.webp" alt="Phase-current harmonic RMS k = 0.667" loading="lazy"></button><figcaption><b>Phase-current harmonic RMS</b> · k = 0.667</figcaption></figure>
+        </div>
+      </article>
+
+      <article class="proj" id="p-vsc">
+        <div class="p-top">
+          <div>
+            <p class="label">I4 · Grid-Connected Inverter</p>
+            <h3>Grid-Connected VSC: Current Control in the dq Frame</h3>
+            <p class="sum">motor 대신 grid에 연결된 inverter를 다루며, 같은 dq control이 grid 쪽에서는 어떻게 쓰이는지 단계적으로 구현했습니다.</p>
+            <ul>
+              <li>αβ frame에서는 PI의 finite gain 때문에 tracking error가 남아 <b>PR controller</b>로 해결</li>
+              <li><b>PLL</b>로 grid voltage에 synchronization한 <b>dq current control</b>과 ωL decoupling, <b>third-harmonic injection</b>으로 modulation index 약 1.15</li>
+              <li>DC-link voltage controller를 loop gain −20 dB/dec crossover로 설계하고 <b>STATCOM</b>까지 확장</li>
+            </ul>
+          </div>
+          <dl class="meta">
+            <div class="num"><div><b>1.15</b><span>M<sub>i</sub> with 3rd-harmonic injection</span></div></div>
+            <div><dt>Tools</dt><dd><span class="chip">PSCAD</span><span class="chip">MATLAB</span></dd></div>
+          </dl>
+        </div>
+        <div class="gal">
+          <figure><button type="button"><img src="img/v-ab.webp" alt="PSCAD αβ transformation" loading="lazy"></button><figcaption><b>αβ transformation</b> · PSCAD</figcaption></figure>
+          <figure><button type="button"><img src="img/v-dc.webp" alt="DC-link voltage control response" loading="lazy"></button><figcaption><b>DC-link control</b> · power step response</figcaption></figure>
+          <figure><button type="button"><img src="img/v-st.webp" alt="STATCOM response" loading="lazy"></button><figcaption><b>STATCOM</b> · reactive power control</figcaption></figure>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===================== 03 POWER CONVERSION ===================== -->
+  <section class="sector" id="conversion">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-num">03</div>
+        <div>
+          <p class="label">Sector</p>
+          <h2>Power Conversion</h2>
+          <p>Power Electronics 수업에서 AC/DC rectifier와 DC/DC converter를 설계하고 LTspice와 MATLAB으로 검증했습니다. 손계산으로 구한 값과 simulation 결과를 비교해 차이가 왜 생기는지까지 분석했습니다.</p>
+        </div>
+      </div>
+
+      <article class="proj" id="p-dbr">
+        <div class="p-top">
+          <div>
+            <p class="label">C1 · AC/DC <span class="src">COURSEWORK</span></p>
+            <h3>Diode Bridge Rectifier: Ideal Calculation vs Non-ideal LTspice Model</h3>
+            <p class="sum">230 V/50 Hz(시드니)와 220 V/60 Hz(한국) 조건에서 constant power load를 가진 single-phase diode bridge rectifier를 손계산하고, line inductance L<sub>s</sub> = 1 mH를 넣은 LTspice 모델과 비교했습니다.</p>
+            <ul>
+              <li>정전력 부하를 output current source로 모델링하고 average output voltage, power, <b>voltage ripple</b>, efficiency 비교</li>
+              <li>L<sub>s</sub>가 charging current pulse와 함께 <b>LC resonance</b>를 만들어 capacitor가 peak 이상으로 충전되는 현상 분석</li>
+              <li>ripple 3% 조건을 맞추려고 C를 300 µF → 1200 µF로 키워 ripple 35.9 V → 8.79 V로 줄이고, 그 대가로 sharp input current pulse 때문에 efficiency가 96.9% → 94.8%로 떨어지는 <b>trade-off</b> 확인</li>
+            </ul>
+          </div>
+          <dl class="meta">
+            <div class="num"><div><b>35.9 → 8.8 V</b><span>output ripple (C ×4)</span></div><div><b>−2.1 %p</b><span>efficiency trade-off</span></div></div>
+            <div><dt>Tools</dt><dd><span class="chip">LTspice</span></dd></div>
+          </dl>
+        </div>
+        <div class="gal">
+          <figure><button type="button"><img src="img/c-dbr1.webp" alt="LTspice rectifier output & circuit" loading="lazy"></button><figcaption><b>LTspice</b> · rectifier output & circuit</figcaption></figure>
+          <figure><button type="button"><img src="img/c-dbr2.webp" alt="Non-ideal model Ls = 1 mH" loading="lazy"></button><figcaption><b>Non-ideal model</b> · L<sub>s</sub> = 1 mH</figcaption></figure>
+          <figure><button type="button"><img src="img/c-dbr3.webp" alt="Korea condition 220 V / 60 Hz" loading="lazy"></button><figcaption><b>Korea condition</b> · 220 V / 60 Hz</figcaption></figure>
+          <figure><button type="button"><img src="img/c-dbr4.webp" alt="Ripple correction C = 1200 µF" loading="lazy"></button><figcaption><b>Ripple correction</b> · C = 1200 µF</figcaption></figure>
+        </div>
+      </article>
+
+      <article class="proj" id="p-sepic">
+        <div class="p-top">
+          <div>
+            <p class="label">C2 · DC/DC <span class="src">COURSEWORK</span></p>
+            <h3>SEPIC Analysis &amp; Design: 30–60 V → 90 V, 20–30 W, CCM</h3>
+            <p class="sum">입력 30~60 V를 출력 90 V로 바꾸는 SEPIC을 worst case 조건에서 설계했습니다. inductor ripple current와 capacitor ripple voltage를 D, T<sub>s</sub>, V<sub>o</sub>로 유도하고, 그 식으로 CCM과 ripple 3% 조건을 만족하는 L<sub>1</sub>, L<sub>2</sub>, C<sub>1</sub>, C<sub>2</sub>의 범위를 구했습니다.</p>
+            <ul>
+              <li>f<sub>s</sub> = 100 kHz, D = 0.6~0.75, 부하 270~405 Ω의 worst case로 소자 최솟값 결정</li>
+              <li>V<sub>DS</sub> 30 V MOSFET에서는 출력이 108 V로 틀어져, V<sub>in</sub> + V<sub>o</sub> margin을 고려해 <b>200 V급 MOSFET(IRFH5020)</b>으로 교체</li>
+              <li>출력 ripple 0.23 V(0.26%), C<sub>1</sub> ripple 0.85 V(&lt; 3%), L<sub>1</sub>·L<sub>2</sub> 모두 <b>CCM</b> 동작을 waveform으로 확인</li>
+              <li>gate charge, parasitic capacitance, R<sub>on</sub>이 실제 duty와 출력 전압에 주는 영향 분석</li>
+            </ul>
+          </div>
+          <dl class="meta">
+            <div class="num"><div><b>0.26 %</b><span>output voltage ripple</span></div><div><b>100 kHz</b><span>switching frequency</span></div></div>
+            <div><dt>Tools</dt><dd><span class="chip">LTspice</span></dd></div>
+          </dl>
+        </div>
+        <div class="gal">
+          <figure><button type="button"><img src="img/c-sep1.webp" alt="SEPIC in LTspice output voltage & circuit" loading="lazy"></button><figcaption><b>SEPIC in LTspice</b> · output voltage & circuit</figcaption></figure>
+          <figure><button type="button"><img src="img/c-sep2.webp" alt="C1 voltage ripple within 3%" loading="lazy"></button><figcaption><b>C<sub>1</sub> voltage ripple</b> · within 3%</figcaption></figure>
+          <figure><button type="button"><img src="img/c-sep3.webp" alt="Inductor current CCM check" loading="lazy"></button><figcaption><b>Inductor current</b> · CCM check</figcaption></figure>
+          <figure><button type="button"><img src="img/c-sep4.webp" alt="Inductor current CCM check" loading="lazy"></button><figcaption><b>Inductor current</b> · CCM check</figcaption></figure>
+          <figure><button type="button"><img src="img/c-sep-fet.webp" alt="Device selection IRFH5020 · 200 V" loading="lazy"></button><figcaption><b>Device selection</b> · IRFH5020 · 200 V</figcaption></figure>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ===================== 04 DSP ===================== -->
+  <section class="sector" id="dsp">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-num">04</div>
+        <div>
+          <p class="label">Sector</p>
+          <h2>DSP Firmware</h2>
+          <p>simulation의 PWM block이 실제 chip에서는 어떤 register로 만들어지는지 TI C2000 board로 확인했습니다. 매 단계 실행 전후 register를 capture하고, oscilloscope 측정값을 계산값과 맞췄습니다.</p>
+        </div>
+      </div>
+
+      <article class="proj" id="p-cpwm">
+        <div class="p-top">
+          <div>
+            <p class="label">F1 · ePWM AQ · DB · TZ</p>
+            <h3>10 kHz Complementary PWM with Dead Time &amp; Trip-Zone Protection</h3>
+            <p class="sum">inverter leg 하나를 구동하는 complementary PWM을 register 값만으로 만들고, fault 시 출력을 차단하는 Trip-Zone 동작까지 실험했습니다.</p>
+            <ul>
+              <li>TBCLK 150 MHz, TBPRD 7500, <b>up-down count mode</b>로 10 kHz를 만들고 DBRED·DBFED 150으로 <b>dead time 1 µs</b> 설정</li>
+              <li><b>POLSEL</b> 4가지를 비교해, dead time 동안 두 출력이 모두 Low가 되는 <b>AHC</b>가 일반 gate driver에 맞다는 결론</li>
+              <li>count mode별로 duty는 같고 pulse 위치만 달라짐을 측정. inverter에 up-down을 쓰는 이유는 symmetric PWM과 주기 중앙 ADC sampling</li>
+              <li>GPIO12를 GND에 연결해 trip을 걸고, <b>one-shot</b>은 latch되고 <b>cycle-by-cycle</b>은 다음 주기에 복귀하는 것을 확인</li>
+            </ul>
+          </div>
+          <dl class="meta">
+            <div class="num">
+              <div><b>9.99863 kHz</b><span>10 kHz target · error 0.014%</span></div>
+              <div><b>1.00 µs</b><span>measured dead time (set 1 µs)</span></div>
+            </div>
+            <div><dt>Tools</dt><dd><span class="chip">C</span><span class="chip">Code Composer</span><span class="chip">TBS1102B</span></dd></div>
+          </dl>
+        </div>
+        <div class="gal wide">
+          <figure><button type="button"><img src="img/d-board.webp" alt="C2000 board ePWM pin probing" loading="lazy"></button><figcaption><span class="ph">Measured</span><b>Board probing</b> · ePWM output pins</figcaption></figure>
+          <figure><button type="button"><img src="img/d-bench.webp" alt="oscilloscope measurement setup" loading="lazy"></button><figcaption><span class="ph">Measured</span><b>Bench setup</b> · complementary PWM</figcaption></figure>
+          <figure><button type="button"><img src="img/d-10k.webp" alt="10 kHz complementary PWM" loading="lazy"></button><figcaption><span class="ph">Measured</span><b>10 kHz complementary PWM</b> · 25 µs/div</figcaption></figure>
+          <figure><button type="button"><img src="img/d-10k-dt.webp" alt="1 µs dead time zoom" loading="lazy"></button><figcaption><span class="ph">Measured</span><b>Dead time 1.00 µs</b> · 500 ns/div</figcaption></figure>
+          <figure><button type="button"><img src="img/d-polsel.webp" alt="POLSEL comparison" loading="lazy"></button><figcaption><span class="ph">Measured</span><b>POLSEL</b> · same delay, different polarity</figcaption></figure>
+          <figure><button type="button"><img src="img/d-cnt.webp" alt="count mode comparison" loading="lazy"></button><figcaption><span class="ph">Measured</span><b>Count mode</b> · up, down, up-down</figcaption></figure>
+          <figure><button type="button"><img src="img/d-tz1.webp" alt="before trip" loading="lazy"></button><figcaption><span class="ph">Measured</span><b>Before trip</b> · both channels switching</figcaption></figure>
+          <figure><button type="button"><img src="img/d-tz2.webp" alt="during trip" loading="lazy"></button><figcaption><span class="ph">Measured</span><b>During trip</b> · outputs forced</figcaption></figure>
+          <figure><button type="button"><img src="img/d-tz3.webp" alt="after trip release" loading="lazy"></button><figcaption><span class="ph">Measured</span><b>After release</b> · OST latched, CBC recovered</figcaption></figure>
+        </div>
+      </article>
+
+      <article class="proj" id="p-epwm">
+        <div class="p-top">
+          <div>
+            <p class="label">F2 · Interrupt · ePWM TB/CC/ET · ADC SOC</p>
+            <h3>Interrupt Path Tracing to ADC Synchronization</h3>
+            <p class="sum">main()의 initialization 순서를 단계로 나누고, 각 단계에서 바뀌는 register를 debugger로 capture하며 interrupt가 CPU까지 전달되는 경로를 따라갔습니다.</p>
+            <ul>
+              <li><b>CPU Timer</b>: PLL로 150 MHz SYSCLKOUT 생성, PIE vector table 0x0D4C에 ISR 주소 등록, 1 s period interrupt로 LED toggle</li>
+              <li><b>ePWM TB·CC·ET</b>: CMPA 1024와 2048, event prescale 1·2·3을 바꿔 interrupt interval 54.61 µs와 LED period를 계산·측정</li>
+              <li>ETCLR(peripheral)와 PIEACK(PIE)를 모두 clear해야 다음 interrupt가 들어오는 것을 register로 확인</li>
+              <li><b>ADC SOC</b>: falling CMPB match마다, 또는 2주기마다 start-of-conversion pulse 생성</li>
+            </ul>
+          </div>
+          <dl class="meta">
+            <div class="num">
+              <div><b>54.61 µs</b><span>ePWM interrupt interval</span></div>
+              <div><b>0.559 / 1.118 s</b><span>LED toggle · CMPA 1024 / 2048</span></div>
+            </div>
+            <div><dt>Tools</dt><dd><span class="chip">C</span><span class="chip">Code Composer</span></dd></div>
+          </dl>
+        </div>
+        <div class="gal">
+          <figure><button type="button"><img src="img/d1-board.webp" alt="CPU Timer LED toggle board" loading="lazy"></button><figcaption><span class="ph">Measured</span><b>CPU Timer</b> · LED toggle</figcaption></figure>
+          <figure><button type="button"><img src="img/d1-reg.webp" alt="register capture before and after InitSysCtrl" loading="lazy"></button><figcaption><span class="ph">Debugger</span><b>Register capture</b> · InitSysCtrl</figcaption></figure>
+          <figure><button type="button"><img src="img/d2-expr.webp" alt="ISR flag registers" loading="lazy"></button><figcaption><span class="ph">Debugger</span><b>ISR flags</b> · ETFLG, PIEACK</figcaption></figure>
+          <figure><button type="button"><img src="img/d2-1024.webp" alt="CMPA 1024 LED toggle" loading="lazy"></button><figcaption><span class="ph">Measured</span><b>CMPA 1024</b> · toggle 0.559 s</figcaption></figure>
+          <figure><button type="button"><img src="img/d2-2048.webp" alt="CMPA 2048 LED toggle" loading="lazy"></button><figcaption><span class="ph">Measured</span><b>CMPA 2048</b> · toggle 1.118 s</figcaption></figure>
+          <figure><button type="button"><img src="img/d4-soc1.webp" alt="ePWM output for SOC experiment" loading="lazy"></button><figcaption><span class="ph">Measured</span><b>ePWM output</b> · SOC experiment</figcaption></figure>
+          <figure><button type="button"><img src="img/d4-soc2.webp" alt="ePWM output after setting change" loading="lazy"></button><figcaption><span class="ph">Measured</span><b>ePWM output</b> · modified setting</figcaption></figure>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="block" id="tools">
+    <div class="wrap">
+      <p class="label">Toolbox</p>
+      <h2>Tools</h2>
+      <div class="tools">
+        <div><h4>Simulation</h4><ul class="tl-list"><li><span class="badge logo" aria-hidden="true"><img src="img/logos/matlab.svg" alt=""></span><span><b>MATLAB / Simulink</b><small>MathWorks</small></span></li><li><span class="badge logo wm" aria-hidden="true"><img src="img/logos/pscad.png" alt=""></span><span><b>PSCAD / EMTDC</b><small>Manitoba Hydro Int’l</small></span></li><li><span class="badge logo wm" aria-hidden="true"><img src="img/logos/siemens.svg" alt=""></span><span><b>PSS/E</b><small>Siemens</small></span></li><li><span class="badge logo" aria-hidden="true"><img src="img/logos/powerworld.png" alt=""></span><span><b>PowerWorld Simulator</b><small>PowerWorld Corporation</small></span></li><li><span class="badge logo" aria-hidden="true"><img src="img/logos/plecs.svg" alt=""></span><span><b>PLECS</b><small>Plexim</small></span></li></ul></div>
+        <div><h4>Circuit &amp; PCB</h4><ul class="tl-list"><li><span class="badge logo" aria-hidden="true"><img src="img/logos/adi.svg" alt=""></span><span><b>LTspice</b><small>Analog Devices</small></span></li><li><span class="badge logo wm" aria-hidden="true"><img src="img/logos/cadence.png" alt=""></span><span><b>PSpice</b><small>Cadence</small></span></li><li><span class="badge logo wm" aria-hidden="true"><img src="img/logos/synopsys.png" alt=""></span><span><b>HSPICE</b><small>Synopsys</small></span></li><li><span class="badge logo" aria-hidden="true"><img src="img/logos/kicad.svg" alt=""></span><span><b>KiCad</b><small>KiCad EDA · PCB design</small></span></li></ul></div>
+        <div><h4>Embedded</h4><ul class="tl-list"><li><span class="badge logo" aria-hidden="true"><img src="img/logos/c.svg" alt=""></span><span><b>C / C++</b><small>ISO standard</small></span></li><li><span class="badge logo" aria-hidden="true"><img src="img/logos/ti.svg" alt=""></span><span><b>C2000 MCU</b><small>Texas Instruments</small></span></li><li><span class="badge logo" aria-hidden="true"><img src="img/logos/ti.svg" alt=""></span><span><b>Code Composer Studio</b><small>Texas Instruments</small></span></li><li><span class="badge logo" aria-hidden="true"><img src="img/logos/vivado.svg" alt=""></span><span><b>Vivado<span class="tl-tag">Verilog</span></b><small>AMD Xilinx · FPGA design</small></span></li><li><span class="badge logo" aria-hidden="true"><img src="img/logos/xilinx.svg" alt=""></span><span><b>Vitis<span class="tl-tag">C</span></b><small>AMD Xilinx · embedded SW</small></span></li></ul></div>
+        <div><h4>Etc.</h4><ul class="tl-list"><li><span class="badge logo" aria-hidden="true"><img src="img/logos/python.svg" alt=""></span><span><b>Python</b><small>PSF</small></span></li><li><span class="badge logo" aria-hidden="true"><img src="img/logos/linux.svg" alt=""></span><span><b>Linux</b><small>Open source</small></span></li><li><span class="badge logo" aria-hidden="true"><img src="img/logos/fortran.svg" alt=""></span><span><b>Fortran</b><small>ISO standard</small></span></li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap contact">
+      <h2>Let's talk<br>power electronics.</h2>
+      <a class="addr" href="mailto:Jaehun01@Yonsei.ac.kr">Jaehun01@Yonsei.ac.kr</a>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap"><span>© 2026 Jaehoon Lee</span><span>Last updated 2026.11</span></footer>
+
+<dialog id="lb" aria-label="확대 이미지"><button class="x" type="button" id="lbx">Close</button><img id="lbi" alt=""><p id="lbc"></p></dialog>
+
+<script src="i18n.js"></script>
+<script>
+(function(){
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const TAU=Math.PI*2;
+  const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  function setup(c){const d=window.devicePixelRatio||1,r=c.getBoundingClientRect();c.width=Math.round(r.width*d);c.height=Math.round(r.height*d);const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);return [x,r.width,r.height]}
+
+
+  /* hero parallax */
+  const mega=document.querySelector('.mega'),hero2=document.getElementById('hero');
+  if(!reduce){let tick=false;window.addEventListener('scroll',()=>{if(tick)return;tick=true;requestAnimationFrame(()=>{const h=hero2.offsetHeight,y=Math.min(window.scrollY,h);const r=y/h;
+    mega.style.transform=`translateY(calc(-50% + ${y*0.45}px)) scale(${1-r*0.12})`;mega.style.opacity=1-r*0.9;tick=false})},{passive:true})}
+
+  /* ---------- HEART: realistic motor → power module → 8 applications ---------- */
+  const heart=document.getElementById('heart'), stage=document.querySelector('.stage'), appsEl=[...document.querySelectorAll('#apps li')];
+  const STEP=2.7, HOLD=3.4, NAPP=8, CYCLE=STEP*NAPP+HOLD;
+  const clamp01=v=>Math.max(0,Math.min(1,v));
+  function bez(p0,p1,p2,p3,n){const o=[];for(let i=0;i<=n;i++){const t=i/n,u=1-t;o.push([u*u*u*p0[0]+3*u*u*t*p1[0]+3*u*t*t*p2[0]+t*t*t*p3[0],u*u*u*p0[1]+3*u*u*t*p1[1]+3*u*t*t*p2[1]+t*t*t*p3[1]])}return o}
+  function poly(x,pts){x.beginPath();pts.forEach((p,i)=>i?x.lineTo(p[0],p[1]):x.moveTo(p[0],p[1]));x.stroke()}
+  function plen(pts){let L=0;for(let i=1;i<pts.length;i++)L+=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);return L}
+  function partial(x,pts,f){if(f<=0)return;const L=plen(pts)*f;let acc=0;x.beginPath();x.moveTo(pts[0][0],pts[0][1]);
+    for(let i=1;i<pts.length;i++){const a=pts[i-1],b=pts[i],d=Math.hypot(b[0]-a[0],b[1]-a[1]);if(acc+d>=L){const r=(L-acc)/d;x.lineTo(a[0]+(b[0]-a[0])*r,a[1]+(b[1]-a[1])*r);break}x.lineTo(b[0],b[1]);acc+=d}x.stroke()}
+  const mkImg=(w,h,body)=>{const i=new Image();i.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="${w*6}" height="${h*6}" viewBox="0 0 ${w} ${h}">${body}</svg>`);return i};
+  const lg=(id,stops,x2=0,y2=1)=>`<linearGradient id="${id}" x1="0" y1="0" x2="${x2}" y2="${y2}">${stops.map(([o,c,a])=>`<stop offset="${o}" stop-color="${c}"${a!=null?` stop-opacity="${a}"`:''}/>`).join('')}</linearGradient>`;
+  const rg=(id,stops)=>`<radialGradient id="${id}" cx=".5" cy=".5" r=".5">${stops.map(([o,c,a])=>`<stop offset="${o}" stop-color="${c}"${a!=null?` stop-opacity="${a}"`:''}/>`).join('')}</radialGradient>`;
+  const SHADOW=rg('sh',[[0,'#000',.75],[1,'#000',0]]);
+
+  /* ===== dynamic parts (drawn in 200x100 design units) ===== */
+  function alloy(x,cx,cy,r,a){
+    let g=x.createRadialGradient(cx,cy,r*.55,cx,cy,r);g.addColorStop(0,'#2b2f32');g.addColorStop(.8,'#121516');g.addColorStop(1,'#060708');
+    x.fillStyle=g;x.beginPath();x.arc(cx,cy,r,0,TAU);x.fill();
+    g=x.createLinearGradient(cx-r,cy-r,cx+r,cy+r);g.addColorStop(0,'#eef2f4');g.addColorStop(.5,'#9aa4a9');g.addColorStop(1,'#5d676c');
+    x.fillStyle=g;x.beginPath();x.arc(cx,cy,r*.68,0,TAU);x.fill();
+    x.fillStyle='#16191b';for(let i=0;i<5;i++){const b=a+i*TAU/5;x.beginPath();x.arc(cx,cy,r*.6,b+0.2,b+TAU/5-0.2);x.arc(cx,cy,r*.24,b+TAU/5-0.32,b+0.32,true);x.closePath();x.fill()}
+    x.fillStyle='#5a3530';x.globalAlpha=.6;x.beginPath();x.arc(cx+r*.3*Math.cos(a+1),cy+r*.3*Math.sin(a+1),r*.12,0,TAU);x.fill();x.globalAlpha=1;
+    g=x.createRadialGradient(cx-r*.05,cy-r*.05,0,cx,cy,r*.2);g.addColorStop(0,'#f2f5f6');g.addColorStop(1,'#7b858a');x.fillStyle=g;x.beginPath();x.arc(cx,cy,r*.18,0,TAU);x.fill();
+  }
+  function steelWheel(x,cx,cy,r,a){
+    let g=x.createRadialGradient(cx-r*.3,cy-r*.3,0,cx,cy,r);g.addColorStop(0,'#c5ccd0');g.addColorStop(.7,'#6f787d');g.addColorStop(1,'#33393c');
+    x.fillStyle=g;x.beginPath();x.arc(cx,cy,r,0,TAU);x.fill();x.strokeStyle='#1e2325';x.lineWidth=.6;x.stroke();
+    x.strokeStyle='#4b5458';x.beginPath();x.arc(cx,cy,r*.62,0,TAU);x.stroke();
+    x.fillStyle='#22282b';x.beginPath();x.arc(cx,cy,r*.22,0,TAU);x.fill();
+    x.fillStyle='#1b1f21';x.beginPath();x.arc(cx+Math.cos(a)*r*.42,cy+Math.sin(a)*r*.42,r*.1,0,TAU);x.fill();
+  }
+  function roadWheel(x,cx,cy,r,a){
+    x.fillStyle='#1a1c18';x.beginPath();x.arc(cx,cy,r,0,TAU);x.fill();
+    let g=x.createRadialGradient(cx-r*.3,cy-r*.3,0,cx,cy,r*.82);g.addColorStop(0,'#7c8462');g.addColorStop(1,'#3b3f2c');x.fillStyle=g;x.beginPath();x.arc(cx,cy,r*.8,0,TAU);x.fill();
+    x.fillStyle='#2a2d20';x.beginPath();x.arc(cx,cy,r*.3,0,TAU);x.fill();
+    x.fillStyle='#9aa07e';for(let i=0;i<6;i++){const b=a+i*TAU/6;x.beginPath();x.arc(cx+Math.cos(b)*r*.2,cy+Math.sin(b)*r*.2,r*.05,0,TAU);x.fill()}
+  }
+  function fan(x,cx,cy,r,a){
+    x.fillStyle='#0d1012';x.beginPath();x.arc(cx,cy,r,0,TAU);x.fill();
+    for(let i=0;i<7;i++){const b=a+i*TAU/7;const g=x.createLinearGradient(cx,cy,cx+Math.cos(b)*r,cy+Math.sin(b)*r);g.addColorStop(0,'#7c868b');g.addColorStop(1,'#3a4246');x.fillStyle=g;
+      x.beginPath();x.moveTo(cx+Math.cos(b)*r*.25,cy+Math.sin(b)*r*.25);x.quadraticCurveTo(cx+Math.cos(b+.5)*r*.7,cy+Math.sin(b+.5)*r*.7,cx+Math.cos(b+.55)*r*.92,cy+Math.sin(b+.55)*r*.92);x.lineTo(cx+Math.cos(b+.15)*r*.92,cy+Math.sin(b+.15)*r*.92);x.closePath();x.fill()}
+    x.fillStyle='#2c3337';x.beginPath();x.arc(cx,cy,r*.25,0,TAU);x.fill();
+    x.strokeStyle='rgba(180,190,195,.35)';x.lineWidth=.4;for(let k=1;k<=3;k++){x.beginPath();x.arc(cx,cy,r*k/3.2,0,TAU);x.stroke()}
+  }
+  function prop(x,cx,cy,r,a,col){ // side-view propeller: blades foreshortened
+    for(let i=0;i<4;i++){const b=a+i*TAU/4;const h=Math.sin(b)*r,w=1.6+1.2*Math.abs(Math.cos(b));x.fillStyle=col;x.globalAlpha=.55+.45*Math.abs(Math.cos(b));
+      x.beginPath();x.ellipse(cx,cy+h/2,w,Math.abs(h/2)+.5,0,0,TAU);x.fill()}x.globalAlpha=1;
+    x.fillStyle='#8f7a52';x.beginPath();x.arc(cx,cy,1.8,0,TAU);x.fill();
+  }
+  function link(x,a,b,w,c1,c2){const dx=b[0]-a[0],dy=b[1]-a[1],L=Math.hypot(dx,dy),an=Math.atan2(dy,dx);x.save();x.translate(a[0],a[1]);x.rotate(an);
+    const g=x.createLinearGradient(0,-w/2,0,w/2);g.addColorStop(0,c1);g.addColorStop(.45,c2);g.addColorStop(1,'#5a2d07');x.fillStyle=g;x.beginPath();x.roundRect(-w*.3,-w/2,L+w*.6,w,w/2);x.fill();
+    x.fillStyle='rgba(255,255,255,.25)';x.fillRect(0,-w/2+1,L,1);x.restore()}
+  function joint(x,p,r,lit,C){const g=x.createRadialGradient(p[0]-r*.3,p[1]-r*.3,0,p[0],p[1],r);g.addColorStop(0,'#5c656a');g.addColorStop(1,'#15191b');x.fillStyle=g;x.beginPath();x.arc(p[0],p[1],r,0,TAU);x.fill();
+    if(lit){x.strokeStyle=C.b;x.lineWidth=1;x.beginPath();x.arc(p[0],p[1],r*.6,0,TAU);x.stroke()}}
+
+  /* ===== shared SVG fragments for cut-away illustrations ===== */
+  const GH=`${lg('gh',[[0,'#cfe3f2',.16],[1,'#6f8fa8',.05]])}`; // ghost shell
+  const MET=`${lg('mt',[[0,'#d5dce0'],[.5,'#8d979c'],[1,'#454e53']])}${lg('mtd',[[0,'#6d777c'],[1,'#262c30']])}${lg('cu',[[0,'#f0a96c'],[.5,'#b8642f'],[1,'#6a3313']])}${lg('bt',[[0,'#4fd1bf'],[1,'#156158']])}${lg('fin',[[0,'#9aa4a9'],[1,'#3b4448']],1,0)}`;
+  const ghost='fill="url(#gh)" stroke="#bcd6ea" stroke-opacity=".55" stroke-width=".55"';
+  const hv=(d,w=1.5)=>`<path d="${d}" stroke="#ff8a2a" stroke-width="${w}" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" stroke="#ffd1a6" stroke-width=".35" fill="none" opacity=".7"/>`;
+  const box=(X,Y,w,h,fill='url(#mtd)',fins=0)=>`<rect x="${X}" y="${Y}" width="${w}" height="${h}" rx="1" fill="${fill}" stroke="#14191c" stroke-width=".4"/>${fins?Array.from({length:Math.floor(w/2.2)},(_,i)=>`<line x1="${X+1.2+i*2.2}" y1="${Y+.6}" x2="${X+1.2+i*2.2}" y2="${Y+h-.6}" stroke="#14191c" stroke-opacity=".55" stroke-width=".45"/>`).join(''):''}<rect x="${X}" y="${Y}" width="${w}" height=".7" fill="#fff" opacity=".18"/>`;
+  const motorSide=(X,Y,w,h)=>`<rect x="${X}" y="${Y}" width="${w}" height="${h}" rx="${h/2.6}" fill="url(#mt)" stroke="#20262a" stroke-width=".45"/>${Array.from({length:Math.floor((w-4)/1.8)},(_,i)=>`<line x1="${X+2+i*1.8}" y1="${Y+1}" x2="${X+2+i*1.8}" y2="${Y+h-1}" stroke="#2a3135" stroke-opacity=".5" stroke-width=".45"/>`).join('')}<rect x="${X+w*.18}" y="${Y+h*.15}" width="${w*.18}" height="${h*.7}" fill="url(#cu)" opacity=".9"/>`;
+  const gear=(cx,cy,r,n=12)=>{let d='';for(let i=0;i<n*2;i++){const a=i*Math.PI/n,rr=i%2?r:r*.82;d+=(i?'L':'M')+(cx+Math.cos(a)*rr).toFixed(2)+','+(cy+Math.sin(a)*rr).toFixed(2)}return `<path d="${d}Z" fill="url(#mt)" stroke="#20262a" stroke-width=".3"/><circle cx="${cx}" cy="${cy}" r="${r*.3}" fill="#1b2023"/>`};
+  const cells=(X,Y,w,h,nx,ny)=>`<rect x="${X}" y="${Y}" width="${w}" height="${h}" rx="1" fill="#1d2a2c" stroke="#0e1416" stroke-width=".4"/>${Array.from({length:nx*ny},(_,i)=>{const cw=w/nx,ch=h/ny,cx=X+(i%nx)*cw,cy=Y+Math.floor(i/nx)*ch;return `<rect x="${(cx+.35).toFixed(2)}" y="${(cy+.35).toFixed(2)}" width="${(cw-.7).toFixed(2)}" height="${(ch-.7).toFixed(2)}" rx=".4" fill="url(#bt)"/>`}).join('')}`;
+
+  const APPS=[
+  {n:'Electric Vehicle',topo:'800 V pack · e-axle · SiC inverter',ct:'inv2',cl:'Traction inverter · SiC',core:[62,62],
+   img:mkImg(200,100,`<defs>${SHADOW}${GH}${MET}</defs>
+   <ellipse cx="102" cy="93" rx="94" ry="4.5" fill="url(#sh)"/>
+   <path d="M12,70 C12,62 18,58 30,56 L58,50 C70,38 92,30 118,31 C138,32 152,40 164,49 L180,53 C188,55 192,60 192,68 L192,72 C192,75 190,76 187,76 L171,76 A17,17 0 0 0 137,76 L67,76 A17,17 0 0 0 33,76 L16,76 C13,76 12,74 12,70 Z" ${ghost}/>
+   <path d="M63,50 C74,40 92,34 116,34 C133,35 145,41 155,49 Z" fill="#9ec4e0" fill-opacity=".08" stroke="#bcd6ea" stroke-opacity=".4" stroke-width=".4"/>
+   ${[40,63,86,111,138,160].map(X=>`<path d="M${X},${X<70?57:X>150?53:48} L${X},74" stroke="#bcd6ea" stroke-opacity=".18" stroke-width=".5"/>`).join('')}
+   <rect x="26" y="72" width="152" height="2.6" rx="1" fill="url(#mtd)"/>
+   ${cells(68,64.5,68,8,10,2)}<rect x="128" y="58.5" width="8" height="5" rx=".8" fill="#2c3337"/><text x="129" y="62.3" font-size="2.8" font-family="monospace" fill="#7fe0c8">BMS</text>
+   ${box(55,54.5,16,6,'url(#mtd)',1)}${motorSide(53,61,20,10)}<rect x="44" y="64" width="9" height="3" fill="url(#mt)"/>
+   ${box(145,58,12,5,'url(#mtd)',1)}${motorSide(143,63.5,16,8)}<rect x="157" y="66" width="5" height="2.6" fill="url(#mt)"/>
+   ${box(166,55,10,6)}<text x="167" y="59.2" font-size="2.6" font-family="monospace" fill="#a9c4d8">OBC</text>
+   <rect x="182" y="56" width="4" height="12" rx=".8" fill="url(#fin)"/>
+   <path d="M150,60 C164,58 176,62 184,62" stroke="#3a8fd6" stroke-width=".9" fill="none"/>
+   ${hv('M71,63 C76,62 80,63.5 86,64.5')}${hv('M136,66 C140,64 143,62 146,60.5')}${hv('M136,62 C150,57 160,56 166,57')}
+   <path d="M177,55.5 L190,59.5 L189.5,62 L176,58.6 Z" fill="#eaf5ff" opacity=".8"/><path d="M13,61.5 L21,59.4 L21,62.4 L13,64.6 Z" fill="#d23b3b" opacity=".85"/>`),
+   wheels:[[50,76,15.5],[154,76,15.5]],
+   traces:()=>[[[62,62],[50,76]],[[62,62],[74,63.5],[86,64.5],[136,66],[146,62]],[[136,62],[166,57]]],
+   dyn(x,s,C){const a=s.T*9*s.run;s.wheels.forEach(([cx,cy,r])=>alloy(x,cx,cy,r,a));
+     if(s.run>0){x.strokeStyle='rgba(160,180,195,.35)';x.lineWidth=.8;for(let i=0;i<4;i++){const o=(s.T*90+i*13)%34;x.globalAlpha=(1-o/34)*s.run;x.beginPath();x.moveTo(10-o*.3,46+i*7);x.lineTo(0-o*.3,46+i*7);x.stroke()}x.globalAlpha=1}}},
+
+  {n:'Data Center',topo:'48 V busway · PSU · CDU pump',ct:'dab',cl:'Isolated DC/DC',core:[100,66],
+   img:mkImg(200,100,`<defs>${MET}${lg('sv',[[0,'#59626a'],[.5,'#3a4247'],[1,'#262c30']])}${lg('cl',[[0,'#e2e8eb'],[.5,'#b9c2c6'],[1,'#879196']],1,0)}
+     <pattern id="vt" width="2" height="2" patternUnits="userSpaceOnUse"><rect width="2" height="2" fill="#2c3337"/><circle cx="1" cy="1" r=".55" fill="#0e1214"/></pattern></defs>
+   <rect x="0" y="94" width="200" height="6" fill="#161c1f"/>
+   <rect x="6" y="3" width="188" height="5" rx="1" fill="url(#cu)" stroke="#5a2a10" stroke-width=".4"/>${[30,62,138,170].map(X=>`<rect x="${X}" y="7.5" width="8" height="5" rx=".6" fill="#3a4246" stroke="#14191c" stroke-width=".3"/><circle cx="${X+4}" cy="10" r="1" fill="#ffb24a"/>`).join('')}
+   ${[18,120].map((rx,k)=>`<rect x="${rx}" y="14" width="62" height="80" rx="1.5" fill="#0f1316" stroke="#2b3439" stroke-width=".6"/>
+     <rect x="${rx+1.2}" y="15" width="2.4" height="78" fill="url(#cu)" opacity=".9"/>
+     ${[0,1,2,3,4,5].map(i=>i===(k?3:2)?`<rect x="${rx+4.5}" y="${16+i*12.6}" width="54" height="11.6" rx=".8" fill="#1a2024" stroke="#3a4448" stroke-width=".4"/>
+        <rect x="${rx+7}" y="${18+i*12.6}" width="10" height="7.6" rx=".6" fill="url(#mt)"/><rect x="${rx+20}" y="${18.5+i*12.6}" width="7" height="6.6" fill="#1f6fb0"/><rect x="${rx+29}" y="${18.5+i*12.6}" width="7" height="6.6" fill="#1f6fb0"/>
+        <path d="M${rx+23.5},${18.5+i*12.6} q0,-2 6,-2 M${rx+32.5},${18.5+i*12.6} q0,-2 6,0" stroke="#4aa3ff" stroke-width=".6" fill="none"/>
+        ${[0,1,2,3].map(j=>`<rect x="${rx+40+j*4}" y="${18+i*12.6}" width="1.6" height="8" fill="#2f3a3f"/>`).join('')}`:
+       `<rect x="${rx+4.5}" y="${16+i*12.6}" width="54" height="11.6" rx=".8" fill="url(#sv)" stroke="#11161a" stroke-width=".4"/>
+       <rect x="${rx+7}" y="${18+i*12.6}" width="22" height="7.6" fill="url(#vt)"/>${[0,1,2].map(j=>`<rect x="${rx+31+j*6}" y="${18+i*12.6}" width="5" height="7.6" rx=".5" fill="#8f999e" stroke="#2a3135" stroke-width=".3"/>`).join('')}`).join('')}`).join('')}
+   <rect x="84" y="14" width="32" height="80" rx="1.5" fill="url(#cl)" stroke="#5f696e" stroke-width=".6"/>
+   <circle cx="100" cy="30" r="11" fill="#22292c"/>
+   <rect x="88" y="48" width="24" height="34" rx="1.5" fill="#1b2125"/>
+   <path d="M88,56 L82,56 M88,74 L82,74" stroke="#d0533f" stroke-width="2"/><path d="M112,56 L118,56 M112,74 L118,74" stroke="#3a8fd6" stroke-width="2"/>
+   <rect x="91" y="84" width="18" height="7" rx="1" fill="#0a2f1e"/><text x="92.5" y="89.4" font-size="4" font-family="monospace" fill="#4be08a">24.1°C</text>`),
+   traces:()=>[[[100,66],[90,66],[84,66],[82,56],[82,15],[78,15]],[[100,66],[110,66],[118,66],[118,15],[122,15]],[[100,66],[100,10],[34,10]],[[100,10],[166,10]]],
+   dyn(x,s,C){const a=s.T*14*s.run;fan(x,100,30,10,a);
+     let g=x.createRadialGradient(100,66,0,100,66,9);g.addColorStop(0,'#6b757a');g.addColorStop(1,'#2a3135');x.fillStyle=g;x.beginPath();x.arc(100,66,8.5,0,TAU);x.fill();
+     x.strokeStyle='#9aa4a9';x.lineWidth=.6;for(let i=0;i<6;i++){const b=a*1.3+i*TAU/6;x.beginPath();x.moveTo(100,66);x.quadraticCurveTo(100+Math.cos(b+.4)*5,66+Math.sin(b+.4)*5,100+Math.cos(b+.7)*7.5,66+Math.sin(b+.7)*7.5);x.stroke()}
+     [18,120].forEach((rx,k)=>{for(let i=0;i<6;i++){if(i===(k?3:2))continue;const y=16+i*12.6,lit=s.spread>0&&i<Math.floor(s.spread*6.99);
+       const on=lit&&((Math.floor(s.T*5+i*1.7+k*3))%3!==0);x.fillStyle=on?'#3df08a':'#1d3a2a';x.beginPath();x.arc(rx+53,y+3.5,1,0,TAU);x.fill();
+       x.fillStyle=lit&&((Math.floor(s.T*7+i*2.3+k))%4)?'#5aa8ff':'#16243a';x.beginPath();x.arc(rx+53,y+7.5,.9,0,TAU);x.fill()}});
+     if(s.run>0){const o=(s.T*12)%4;x.setLineDash([1.2,2.8]);x.lineDashOffset=-o;x.lineWidth=.9;x.strokeStyle='#ff9b8a';x.beginPath();x.moveTo(88,56);x.lineTo(82,56);x.stroke();x.strokeStyle='#9fd0ff';x.beginPath();x.moveTo(112,74);x.lineTo(118,74);x.stroke();x.setLineDash([])}}},
+
+  {n:'Aerospace',topo:'More-electric · 270 VDC · EMA',ct:'inv2',cl:'270 VDC inverter',core:[109,65.5],
+   img:mkImg(200,100,`<defs>${GH}${MET}${lg('tl',[[0,'#3b72b5',.6],[1,'#163a68',.4]],1,1)}${lg('nc',[[0,'#f2f5f6',.35],[1,'#6e787d',.2]])}</defs>
+   <path d="M118,57 L80,77 L95,77 L134,58 Z" ${ghost}/><path d="M80,77 L95,77 L93.5,79.5 L78.5,79.5 Z" fill="#8d979c" opacity=".7"/>
+   <path d="M18,52 C18,46 26,42 40,42 L156,42 C172,42 186,46 194,52 C186,57.5 174,60.5 158,60.5 L40,60.5 C28,60.5 18,57.5 18,52 Z" ${ghost}/>
+   ${Array.from({length:26},(_,i)=>`<path d="M${36+i*5.6},42.6 L${36+i*5.6},60" stroke="#bcd6ea" stroke-opacity=".16" stroke-width=".5"/>`).join('')}
+   <path d="M24,53.5 L186,53.5" stroke="#bcd6ea" stroke-opacity=".35" stroke-width=".5"/>
+   <path d="M22,44 L8,13 L23,13 L46,42 Z" fill="url(#tl)" stroke="#bcd6ea" stroke-opacity=".4" stroke-width=".4"/>
+   <path d="M21,52.5 L3,57 L9,59 L32,54.5 Z" ${ghost}/>
+   ${box(92,54.5,16,5.2)}<text x="93.4" y="58.5" font-size="2.8" font-family="monospace" fill="#a9c4d8">EPDC</text>
+   ${box(118,54.6,10,5,'url(#mtd)',1)}<circle cx="123" cy="57.1" r="1.6" fill="url(#cu)"/>
+   ${box(168,46.5,10,5)}<path d="M169,48 L177,48 M169,50 L175,50" stroke="#4aa3ff" stroke-width=".5"/>
+   ${cells(60,55,14,4.6,5,1)}
+   <path d="M106,60 L111,56.5 L121,56.5 L119,60 Z" fill="#7d878c"/>
+   <rect x="98" y="59.5" width="28" height="11.5" rx="5.7" fill="url(#nc)" stroke="#bcd6ea" stroke-opacity=".5" stroke-width=".45"/>
+   <rect x="103" y="61.6" width="12" height="7.6" rx="2" fill="url(#mt)"/><rect x="105" y="62.2" width="4" height="6.4" fill="url(#cu)"/><rect x="115" y="63.8" width="8" height="3.2" fill="url(#mtd)"/>
+   <ellipse cx="126" cy="65.2" rx="2.6" ry="5.4" fill="#15191c"/>
+   ${box(9,16,5,3)}${box(85,75.5,5,2.6)}<rect x="50" y="59.5" width="4" height="4" rx=".6" fill="url(#mtd)"/>
+   ${hv('M109,61.5 L112,57.5 L108,57',1.1)}${hv('M92,57 L74,57',1.1)}${hv('M108,57 L118,57',1.1)}${hv('M100,59.7 L96,66 L88,75.5',1)}${hv('M92,56 L60,54 L30,46 L12,19',1)}${hv('M108,55 L168,49',1)}`),
+   traces:()=>[[[109,65.5],[112,58],[100,57],[74,57]],[[100,57],[118,57]],[[100,59.7],[96,66],[88,75.5]],[[100,56],[60,54],[30,46],[12,19]],[[108,55],[168,49]]],
+   dyn(x,s,C){const a=s.T*30*s.run;x.save();x.beginPath();x.ellipse(126,65.2,2.4,5.1,0,0,TAU);x.clip();
+     for(let i=0;i<9;i++){const b=a+i*TAU/9;x.strokeStyle='#8e989d';x.lineWidth=.5;x.beginPath();x.moveTo(126,65.2);x.lineTo(126+Math.cos(b)*1.2,65.2+Math.sin(b)*5.1);x.stroke()}x.restore();
+     const fl=s.run?Math.sin(s.T*2)*1.2:0;x.fillStyle='#aab3b8';x.beginPath();x.moveTo(80,77+0);x.lineTo(95,77);x.lineTo(93.5+fl*.3,79.5+fl);x.lineTo(78.5+fl*.3,79.5+fl);x.closePath();x.fill();
+     if(s.run>0){x.strokeStyle='rgba(200,215,225,.35)';x.lineWidth=.7;for(let i=0;i<3;i++){const o=(s.T*110+i*20)%46;x.globalAlpha=(1-o/46)*s.run;x.beginPath();x.moveTo(15-o*.3,36+i*9);x.lineTo(2-o*.3,36+i*9);x.stroke()}x.globalAlpha=1}}},
+
+  {n:'Railway',topo:'Transformer · converter · bogie',ct:'npc',cl:'3-level NPC',core:[44,79],
+   img:mkImg(200,100,`<defs>${GH}${MET}${lg('bl',[[0,'#7a6f62'],[1,'#3b352e']])}</defs>
+   <path d="M0,2.5 L200,2.5" stroke="#5c666b" stroke-width=".5"/><path d="M0,6.5 L200,6.5" stroke="#8b959a" stroke-width=".6"/>${[10,40,70,100,130,160,190].map(X=>`<line x1="${X}" y1="2.5" x2="${X}" y2="6.5" stroke="#5c666b" stroke-width=".3"/>`).join('')}
+   <path d="M52,27.5 L58,15 L66,7 M66,27.5 L58,15 M60,7 L72,7" stroke="url(#mt)" stroke-width="1.1" fill="none"/>${box(46,24.5,8,3.5)}${box(70,24.5,10,3.5)}
+   <path d="M10,30 L140,30 C160,30 176,36 186,48 C192,55 194,62 194,70 L10,70 Z" ${ghost}/>
+   ${Array.from({length:12},(_,i)=>`<path d="M${16+i*12},30.5 L${16+i*12},69.5" stroke="#bcd6ea" stroke-opacity=".16" stroke-width=".5"/>`).join('')}
+   <path d="M10,47 L176,47" stroke="#bcd6ea" stroke-opacity=".3" stroke-width=".5"/>
+   <path d="M14,38 L150,38 C160,38 168,41 174,46 L14,46 Z" fill="#9ec4e0" fill-opacity=".07"/>
+   <path d="M10,55 L186,55 L190,59 L10,59 Z" fill="#294f8f" opacity=".55"/>
+   <rect x="10" y="70" width="184" height="3" fill="url(#mtd)"/>
+   ${box(70,72.5,28,7,'url(#mtd)',0)}${Array.from({length:6},(_,i)=>`<rect x="${72+i*4.2}" y="73.4" width="3" height="5.2" rx=".5" fill="url(#cu)" opacity=".85"/>`).join('')}<text x="72" y="82.6" font-size="2.6" font-family="monospace" fill="#a9c4d8">MAIN TR</text>
+   ${box(102,72.5,22,7,'url(#mtd)',1)}<text x="103" y="82.6" font-size="2.6" font-family="monospace" fill="#a9c4d8">CONV</text>
+   ${box(126,72.5,14,6)}<text x="127" y="82.6" font-size="2.6" font-family="monospace" fill="#a9c4d8">APS</text>
+   <rect x="26" y="74" width="40" height="5" rx="1.5" fill="#2c3337"/><rect x="128" y="74" width="40" height="5" rx="1.5" fill="#2c3337"/>
+   ${motorSide(36,75.5,16,7)}${motorSide(146,75.5,16,7)}${gear(56,79,3.4,10)}${gear(142,79,3.4,10)}
+   ${hv('M59,28 L60,33 L84,33 L84,72',1)}${hv('M98,76 L102,76',1.2)}${hv('M102,78 L60,78 L52,79',1.1)}${hv('M124,78 L146,79',1.1)}
+   <rect x="0" y="89" width="200" height="11" fill="url(#bl)"/><rect x="0" y="87.4" width="200" height="1.6" fill="#b0b8bc"/>`),
+   traces:()=>[[[44,79],[52,78.5],[60,78],[102,78],[102,76],[98,76]],[[84,72],[84,33],[60,33],[59,28],[62,8]],[[124,78],[146,79],[154,79]]],
+   dyn(x,s,C){const a=s.T*10*s.run;const off=(s.T*70*s.run)%10;x.fillStyle='#4a3f35';for(let i=0;i<22;i++){const X=i*10-off;x.fillRect(X,89,5,2)}
+     [[33,84],[60,84],[135,84],[162,84]].forEach(([cx,cy])=>steelWheel(x,cx,cy,5.6,a))}},
+
+  {n:'Defense',topo:'Series hybrid · genset · DC bus',ct:'inv2',cl:'Traction inverter',core:[166,80],
+   img:mkImg(200,100,`<defs>${SHADOW}${GH}${MET}${lg('am',[[0,'#8a9468',.55],[1,'#3a3f2b',.4]])}${lg('br',[[0,'#7b8263'],[.5,'#3e4331'],[1,'#22251a']])}</defs>
+   <ellipse cx="100" cy="95" rx="92" ry="4.5" fill="url(#sh)"/>
+   <path d="M16,76 L178,76 C186,76 190,82 186,88 L178,94 L24,94 L14,86 C11,82 12,76 16,76 Z" fill="#1b1d17"/>
+   <path d="M14,46 L150,46 L176,54 L184,66 L178,75 L20,75 L10,62 Z" fill="url(#am)" stroke="#c6cfa8" stroke-opacity=".45" stroke-width=".55"/>
+   ${[0,1,2,3,4,5,6].map(i=>`<path d="M${28+i*22},46.5 L${28+i*22},74.5" stroke="#c6cfa8" stroke-opacity=".14" stroke-width=".5"/>`).join('')}
+   ${box(16,52,22,13,'url(#mtd)',0)}${Array.from({length:4},(_,i)=>`<rect x="${18+i*5}" y="49.5" width="3.4" height="3" fill="url(#mt)"/>`).join('')}<text x="18" y="61" font-size="2.8" font-family="monospace" fill="#c9d29f">ENGINE</text>
+   ${motorSide(39,54,16,9)}<text x="40" y="66.8" font-size="2.6" font-family="monospace" fill="#c9d29f">GEN</text>
+   ${cells(62,63,32,8,8,2)}${box(98,58,20,9,'url(#mtd)',1)}<text x="99" y="70" font-size="2.6" font-family="monospace" fill="#c9d29f">DC BUS · PDU</text>
+   ${box(146,66,14,7,'url(#mtd)',1)}${motorSide(156,74,14,8)}
+   <path d="M70,46 L77,34 L118,32 L129,38 L131,46 Z" fill="url(#am)" stroke="#c6cfa8" stroke-opacity=".5" stroke-width=".5"/>
+   <rect x="127" y="37.2" width="68" height="3" rx="1" fill="url(#br)"/><rect x="186" y="36.2" width="10" height="5" rx="1" fill="#2c3022"/>
+   ${gear(98,44,5,16)}${motorSide(84,39,10,5)}${box(90,26.5,12,6)}<rect x="92" y="28" width="8" height="3" rx=".5" fill="#1b2a33"/>
+   <path d="M80,34 L78,9" stroke="#5c634a" stroke-width=".6"/><circle cx="78" cy="9" r=".8" fill="#5c634a"/>${box(104,29,8,4)}
+   <rect x="8" y="64" width="4" height="4" rx=".6" fill="#ffb24a"/>
+   ${hv('M55,58.5 L62,60 L98,60',1.1)}${hv('M118,62 L146,69',1.2)}${hv('M108,58 L104,44 L94,41',1)}${hv('M98,66 L12,66',.9)}
+   <circle cx="168" cy="80" r="7.5" fill="#2a2d22"/><circle cx="24" cy="80" r="6.5" fill="#2a2d22"/>`),
+   traces:()=>[[[166,80],[160,76],[153,70],[146,69],[118,62],[108,60],[98,60],[62,60],[55,58.5]],[[108,58],[104,44],[94,41]],[[98,66],[12,66]]],
+   dyn(x,s,C){const a=s.T*8*s.run;
+     const off=(s.T*30*s.run)%5;x.fillStyle='#3a3d33';for(let i=0;i<34;i++){const X=24+i*5-off;if(X>22&&X<178){x.fillRect(X,92.2,3,1.6);x.fillRect(200-X,76.4,3,1.4)}}
+     for(let i=0;i<6;i++)roadWheel(x,42+i*21.5,86.5,7.4,a);
+     const sg=(cx,cy,r)=>{x.fillStyle='#4a5038';x.beginPath();for(let k=0;k<20;k++){const b=a+k*TAU/20,rr=k%2?r:r*.82;x.lineTo(cx+Math.cos(b)*rr,cy+Math.sin(b)*rr)}x.closePath();x.fill();x.fillStyle='#22251a';x.beginPath();x.arc(cx,cy,r*.4,0,TAU);x.fill()};
+     sg(168,80,7);sg(24,80,6);
+     if(s.run>0){x.fillStyle='rgba(120,120,110,.35)';for(let i=0;i<4;i++){const o=(s.T*20+i*5)%18;x.globalAlpha=(1-o/18)*.5*s.run;x.beginPath();x.arc(16-o*.6,47-o*.8,1.5+o*.25,0,TAU);x.fill()}x.globalAlpha=1}}},
+
+  {n:'Shipbuilding',topo:'Gensets · switchboard · pod drive',ct:'npc',cl:'MV 3-level NPC',core:[30,82],
+   img:mkImg(200,100,`<defs>${GH}${MET}${lg('wt',[[0,'#1d4a66'],[1,'#071822']])}</defs>
+   <rect x="0" y="66" width="200" height="34" fill="url(#wt)"/>
+   <path d="M20,46 L188,46 L197,48 L183,74 L33,74 C26,70 22,60 20,46 Z" ${ghost}/>
+   <path d="M24.5,64 L190.6,64 L183,74 L33,74 C29,71.8 26.5,68.5 24.5,64 Z" fill="#8a2b22" opacity=".45"/>
+   ${Array.from({length:14},(_,i)=>`<path d="M${30+i*11},46.5 L${30+i*11},73.5" stroke="#bcd6ea" stroke-opacity=".14" stroke-width=".5"/>`).join('')}<path d="M24,56 L192,56" stroke="#bcd6ea" stroke-opacity=".28" stroke-width=".5"/>
+   <path d="M30,46 L30,20 L58,20 L58,46 Z" ${ghost}/><rect x="26" y="16" width="36" height="5" rx=".6" fill="#e9eef0" opacity=".5"/>
+   <path d="M63,46 L64,24 L74,24 L75,46 Z" ${ghost}/>
+   ${(()=>{const cols=['#2f5f8a','#a33a2c','#c0832e','#5a6b73','#3d7a5c','#8a8f93'];let o='';for(let t=0;t<2;t++)for(let i=0;i<12;i++){const X=82+i*8.8,Y=39-t*7;o+=`<rect x="${X}" y="${Y}" width="8.4" height="6.6" fill="${cols[(i*3+t*5)%6]}" opacity=".55" stroke="#101418" stroke-width=".3"/>`}return o})()}
+   ${[0,1].map(i=>`${box(66+i*24,58,12,8,'url(#mtd)',0)}${motorSide(78+i*24,59,9,6)}`).join('')}
+   <text x="67" y="70" font-size="2.6" font-family="monospace" fill="#a9c4d8">GENSET ×2</text>
+   ${box(118,57,10,9,'url(#mtd)',0)}${[0,1,2].map(i=>`<rect x="${119.5+i*3}" y="58.5" width="2" height="6" fill="#2b4a6a"/>`).join('')}<text x="117" y="70" font-size="2.6" font-family="monospace" fill="#a9c4d8">SWBD</text>
+   ${box(46,58,14,8,'url(#mtd)',1)}<text x="46" y="70" font-size="2.6" font-family="monospace" fill="#a9c4d8">DRIVE</text>
+   ${hv('M66,62 L60,62',1.2)}${hv('M114,62 L128,62 M90,62 L118,62',1.1)}${hv('M46,62 L36,62 L32,74 L31,78',1.2)}
+   <path d="M33,74 L34,78 L30,78 Z" fill="#4f585c"/><rect x="22" y="78.5" width="18" height="7" rx="3.5" fill="url(#mt)"/><rect x="26" y="79.5" width="6" height="5" fill="url(#cu)"/>`),
+   traces:()=>[[[30,82],[31,78],[32,74],[36,62],[46,62]],[[60,62],[66,62]],[[90,62],[118,62],[128,62]]],
+   dyn(x,s,C){prop(x,20,82,6.5,s.T*12*s.run,'#b8955a');
+     x.strokeStyle='rgba(210,230,240,.55)';x.lineWidth=.7;x.beginPath();for(let X=0;X<=200;X+=3){const Y=66.5+.9*Math.sin(X/7+s.T*3*s.run);X?x.lineTo(X,Y):x.moveTo(X,Y)}x.stroke();
+     if(s.run>0){x.strokeStyle='rgba(220,240,255,.5)';for(let i=0;i<3;i++){const o=(s.T*26+i*7)%22;x.globalAlpha=(1-o/22)*s.run;x.beginPath();x.arc(11-o*.5,82,2+o*.35,Math.PI*.55,Math.PI*1.45);x.stroke()}x.globalAlpha=1;
+       x.fillStyle='rgba(150,150,150,.35)';for(let i=0;i<3;i++){const o=(s.T*14+i*6)%18;x.globalAlpha=(1-o/18)*.6;x.beginPath();x.arc(69-o*.4,22-o,1.4+o*.2,0,TAU);x.fill()}x.globalAlpha=1}}},
+
+  {n:'Robotics',topo:'Rotary & linear actuators · servo',ct:'inv2',cl:'Servo drive · FOC',core:[70,52],
+   img:mkImg(200,100,`<defs>${SHADOW}${GH}${MET}${lg('al',[[0,'#c7ced2'],[1,'#6d777c']],1,0)}${lg('vs',[[0,'#0d1418'],[1,'#22343f']])}</defs>
+   <rect x="0" y="95" width="200" height="5" fill="#121719"/><ellipse cx="70" cy="96" rx="20" ry="2" fill="url(#sh)"/><ellipse cx="152" cy="96" rx="22" ry="2" fill="url(#sh)"/>
+   <path d="M56,26 L84,26 L88,32 L86,52 L80,58 L60,58 L54,52 L52,32 Z" ${ghost}/>
+   <rect x="68.4" y="27" width="3.2" height="32" fill="url(#al)"/><path d="M56,30 L84,30" stroke="url(#al)" stroke-width="2"/><path d="M60,56 L80,56" stroke="url(#al)" stroke-width="2"/>
+   ${cells(61,36,18,13,3,3)}${box(62,50,16,4,'url(#mtd)',1)}
+   <path d="M59,64 L67,64 L66,78 L60,78 Z M73,64 L81,64 L80,78 L74,78 Z M60,81 L66,81 L65.5,92 L60.5,92 Z M74,81 L80,81 L79.5,92 L74.5,92 Z" ${ghost}/>
+   <rect x="61.6" y="65" width="2.8" height="12" rx="1" fill="url(#al)"/><rect x="75.6" y="65" width="2.8" height="12" rx="1" fill="url(#al)"/>
+   ${[[62.2,82],[76.2,82]].map(([X,Y])=>`<rect x="${X}" y="${Y}" width="1.6" height="9" fill="url(#mt)"/>${Array.from({length:6},(_,i)=>`<line x1="${X}" y1="${Y+1+i*1.4}" x2="${X+1.6}" y2="${Y+1.7+i*1.4}" stroke="#2a3135" stroke-width=".3"/>`).join('')}<rect x="${X-.8}" y="${Y-1}" width="3.2" height="2.4" rx=".5" fill="url(#mtd)"/>`).join('')}
+   <path d="M58,92 L67,92 L68,95.5 L57,95.5 Z M73,92 L82,92 L83,95.5 L72,95.5 Z" fill="url(#mtd)"/>
+   <rect x="57" y="57.5" width="26" height="6.5" rx="1" fill="url(#mtd)"/>
+   <path d="M46.5,32 L52.5,32 L52,45 L47,45 Z M87.5,32 L93.5,32 L93,45 L88,45 Z M46.5,48 L52,48 L51.5,58 L47,58 Z M88,48 L93.5,48 L93,58 L88.5,58 Z" ${ghost}/>
+   <rect x="48.6" y="33" width="1.8" height="24" fill="url(#al)"/><rect x="89.6" y="33" width="1.8" height="24" fill="url(#al)"/>
+   <path d="M46,58 L52,58 L51.5,64 L48,65 L46.5,63 Z M88,58 L94,58 L93.5,63 L92,65 L88.5,64 Z" fill="url(#mtd)"/>
+   <rect x="67" y="21.5" width="6" height="5" fill="#1d2326"/>
+   <rect x="61" y="5.5" width="18" height="16.5" rx="5" fill="url(#gh)" stroke="#bcd6ea" stroke-opacity=".55" stroke-width=".5"/><rect x="62.6" y="10.5" width="14.8" height="6.4" rx="3" fill="url(#vs)"/>
+   ${box(64,6.5,12,3,'url(#mtd)')}
+   ${hv('M70,52 L70,30 L52,30 L50,46',.8)}${hv('M70,30 L88,30 L90,46',.8)}${hv('M70,58 L63,62 L63,80',.8)}${hv('M70,58 L77,62 L77,80',.8)}${hv('M70,60 L70,94 L148,94 L148,88',.9)}
+   <rect x="138" y="88" width="28" height="8" rx="1" fill="url(#mtd)"/><rect x="141" y="83" width="22" height="6" rx="1.5" fill="url(#mt)"/>`),
+   arm(s){const w=s.T*1.5;const t1=-1.15+.25*Math.sin(w)*s.run,t2=t1+1.9+.3*Math.sin(w+1)*s.run;const J2=[152,79],J3=[J2[0]+40*Math.cos(t1),J2[1]+40*Math.sin(t1)],J4=[J3[0]+32*Math.cos(t2),J3[1]+32*Math.sin(t2)];return {J2,J3,J4,t1,t2}},
+   traces(s){const {J2,J3,J4}=this.arm(s);return [[[70,52],[70,30],[52,30],[50,46]],[[70,30],[88,30],[90,46]],[[70,58],[63,62],[63,80]],[[70,58],[77,62],[77,80]],[[70,60],[70,94],[148,94],J2,J3,J4]]},
+   dyn(x,s,C){const {J2,J3,J4,t1,t2}=this.arm(s);const lit=s.spread>0;
+     x.fillStyle='#3b4448';x.beginPath();x.roundRect(144,72,16,12,3);x.fill();
+     link(x,J2,J3,9,'#f6a14d','#d06a12');link(x,J3,J4,7,'#f6a14d','#d06a12');
+     const servo=(p,an,L,w)=>{x.save();x.translate(p[0],p[1]);x.rotate(an);const g=x.createLinearGradient(0,-w/2,0,w/2);g.addColorStop(0,'#5f696e');g.addColorStop(.5,'#2a3135');g.addColorStop(1,'#14181a');x.fillStyle=g;x.beginPath();x.roundRect(-L,-w/2,L,w,1.5);x.fill();
+       x.strokeStyle='rgba(0,0,0,.4)';x.lineWidth=.35;for(let i=1;i<L/1.6;i++){x.beginPath();x.moveTo(-L+i*1.6,-w/2+.5);x.lineTo(-L+i*1.6,w/2-.5);x.stroke()}x.fillStyle='#ffb24a';x.fillRect(-L+1,-w/2-1.2,3,1.4);x.restore()};
+     servo(J2,t1+Math.PI,10,6);servo(J3,t2+Math.PI,8,5);
+     x.save();x.translate(J4[0],J4[1]);x.rotate(t2);x.fillStyle='#2a3135';x.fillRect(0,-3.5,6,7);x.fillStyle='#9aa4a9';x.fillRect(6,-2.5,2,5);x.fillRect(8,-3,4,1.4);x.fillRect(8,1.6,4,1.4);x.restore();
+     joint(x,J2,5.2,lit&&s.spread>.5,C);joint(x,J3,4.4,lit&&s.spread>.75,C);joint(x,J4,3.4,lit&&s.spread>.95,C);
+     [[52,30,3.6,.2],[88,30,3.6,.2],[49.5,46.5,2.8,.35],[90.5,46.5,2.8,.35],[63,62,3.4,.1],[77,62,3.4,.1],[63,79.5,3,.3],[77,79.5,3,.3]].forEach(([jx,jy,r,th])=>{
+       x.fillStyle='#5c656a';x.beginPath();x.arc(jx,jy,r+.9,0,TAU);x.fill();joint(x,[jx,jy],r,lit&&s.spread>th,C);x.strokeStyle='rgba(255,255,255,.25)';x.lineWidth=.3;x.beginPath();x.arc(jx,jy,r*.8,0,TAU);x.stroke()});
+     if(lit){x.fillStyle=C.c;x.globalAlpha=.55+.35*Math.sin(s.T*4);x.fillRect(63.5,12.6,13,1.6);x.globalAlpha=1}}},
+
+  {n:'Welding',topo:'Inverter stage · wire-feed motor',ct:'dab',cl:'HF full-bridge',core:[50,26],
+   img:mkImg(200,100,`<defs>${GH}${MET}${lg('cs',[[0,'#3d7cc4',.35],[1,'#173d6b',.25]],1,1)}${lg('pl',[[0,'#8a9399'],[.5,'#5d666b'],[1,'#3a4146']])}</defs>
+   <rect x="0" y="88" width="200" height="12" fill="#161b1e"/>
+   <rect x="8" y="34" width="62" height="54" rx="3" fill="url(#cs)" stroke="#bcd6ea" stroke-opacity=".55" stroke-width=".55"/>
+   <rect x="12" y="38" width="20" height="44" rx="1" fill="#0f2a1c" stroke="#24563a" stroke-width=".4"/>
+   ${box(14,41,16,7,'url(#mtd)',1)}<rect x="15" y="49" width="6" height="5" fill="#1c1f22"/><rect x="22" y="49" width="6" height="5" fill="#1c1f22"/>
+   ${[0,1,2].map(i=>`<rect x="${14+i*5.5}" y="${57}" width="4" height="8" rx="1.8" fill="#2b5fa8"/>`).join('')}<rect x="14" y="68" width="14" height="10" rx=".6" fill="#163222"/>
+   <rect x="36" y="40" width="14" height="18" rx="1" fill="#2a2f33"/>${[0,1,2,3,4].map(i=>`<rect x="35" y="${42+i*3.2}" width="16" height="2" rx=".8" fill="url(#cu)"/>`).join('')}<text x="36.5" y="61.5" font-size="2.6" font-family="monospace" fill="#a9c4d8">HF TR</text>
+   <circle cx="43" cy="72" r="6" fill="none" stroke="url(#cu)" stroke-width="3"/><circle cx="43" cy="72" r="6" fill="none" stroke="#3b2210" stroke-width=".3" stroke-dasharray=".6 .6"/>
+   <rect x="55" y="40" width="12" height="44" rx="1" fill="#1a1f22"/>
+   <circle cx="20" cy="85.4" r="1.6" fill="#c49a52"/><circle cx="30" cy="85.4" r="1.6" fill="#c49a52"/>
+   <rect x="12" y="13" width="48" height="21" rx="2" fill="url(#gh)" stroke="#bcd6ea" stroke-opacity=".55" stroke-width=".5"/>
+   ${motorSide(46,22,10,8)}${gear(41,29,3,10)}${gear(41,23,3,10)}
+   <path d="M60,30 C96,30 92,78 128,62 C140,56 146,52 150,51" stroke="#0b0d0e" stroke-width="3.6" fill="none"/><path d="M60,29.2 C96,29.2 92,77 128,61.2" stroke="#4a5257" stroke-width=".5" fill="none"/>
+   <path d="M147,47.5 L162,43.5 L165,50 L150,54.5 Z" fill="#2a3135" stroke="#101416" stroke-width=".4"/>
+   <path d="M163,46.5 C171,50 174.5,60 173.5,70" stroke="#8b9399" stroke-width="3.2" fill="none"/><rect x="171" y="69.5" width="5" height="6" rx="1" fill="#c1824b"/>
+   <rect x="128" y="80.5" width="68" height="7.5" fill="url(#pl)"/>
+   <path d="M140,80.6 L172,80.6" stroke="#cfd5d8" stroke-width="1.8" stroke-linecap="round"/>${Array.from({length:16},(_,i)=>`<path d="M${141+i*2},79.8 q1,.8 0,1.6" stroke="#8a9399" stroke-width=".35" fill="none"/>`).join('')}
+   ${hv('M22,48 L22,46 L36,46',.9)}${hv('M50,50 L52,58 L48,72',.9)}${hv('M49,72 L56,62 L56,34 L52,30',.9)}`),
+   cable(){return bez([60,30],[96,30],[92,78],[128,62],14).concat(bez([128,62],[140,56],[146,52],[150,51],5).slice(1)).concat([[163,47],[173,70],[173.5,77]])},
+   traces(){return [[[22,48],[22,46],[36,46]],[[50,50],[52,58],[48,72],[56,62],[56,34],[52,30],[60,30]],this.cable()]},
+   dyn(x,s,C){const a=s.T*8*s.run;
+     let g=x.createRadialGradient(26.5,23.5,1,26.5,23.5,7.5);g.addColorStop(0,'#5a3a1e');g.addColorStop(.3,'#d1914e');g.addColorStop(1,'#8a5226');x.fillStyle=g;x.beginPath();x.arc(26.5,23.5,7.2,0,TAU);x.fill();
+     x.strokeStyle='#5a3a1e';x.lineWidth=.5;for(let i=0;i<3;i++){const b=a+i*TAU/3;x.beginPath();x.moveTo(26.5+Math.cos(b)*2,23.5+Math.sin(b)*2);x.lineTo(26.5+Math.cos(b)*7,23.5+Math.sin(b)*7);x.stroke()}
+     fan(x,61,62,5.4,s.T*16*s.run);
+     if(s.run>0){x.strokeStyle='#c9a46b';x.lineWidth=.5;x.setLineDash([.8,.8]);x.lineDashOffset=-(s.T*20)%1.6;x.beginPath();x.moveTo(33,26);x.lineTo(60,26);x.stroke();x.setLineDash([]);
+       const f=.6+.4*Math.abs(Math.sin(s.T*37));let g2=x.createRadialGradient(173.5,79.5,0,173.5,79.5,16);g2.addColorStop(0,`rgba(255,255,255,${f})`);g2.addColorStop(.15,`rgba(170,200,255,${.8*f})`);g2.addColorStop(.5,`rgba(90,120,255,${.25*f})`);g2.addColorStop(1,'rgba(60,80,255,0)');
+       x.fillStyle=g2;x.beginPath();x.arc(173.5,79.5,16,0,TAU);x.fill();
+       for(let i=0;i<9;i++){const ph=(s.T*2.2+i*.29)%1,ang=-Math.PI*(.1+.8*((i*.618)%1));const r1=3+ph*24;x.strokeStyle=`rgba(255,${170+Math.floor(60*(1-ph))},80,${1-ph})`;x.lineWidth=.6;
+         x.beginPath();x.moveTo(173.5+Math.cos(ang)*r1,79.5+Math.sin(ang)*r1+ph*ph*12);x.lineTo(173.5+Math.cos(ang)*(r1+3),79.5+Math.sin(ang)*(r1+3)+ph*ph*12+.6);x.stroke()}}}}
+  ];
+
+  /* ===== power-conversion topology (schematic, 132 x 88 box centred on 0,0) ===== */
+  function igbt(x,cx,cy,s,on,cond,C,ink){
+    const col=on&&cond?C.b:ink;x.lineWidth=on&&cond?1.3:.9;x.strokeStyle=col;
+    if(on&&cond){x.shadowColor=C.b;x.shadowBlur=6}
+    x.beginPath();
+    x.moveTo(cx-7*s,cy+3*s);x.lineTo(cx-3*s,cy+3*s);x.moveTo(cx-3*s,cy-4.5*s);x.lineTo(cx-3*s,cy+4.5*s);   // gate
+    x.moveTo(cx-1.6*s,cy-5.5*s);x.lineTo(cx-1.6*s,cy+5.5*s);                                              // channel
+    x.moveTo(cx-1.6*s,cy-2.5*s);x.lineTo(cx+3*s,cy-6*s);x.lineTo(cx+3*s,cy-10*s);                       // collector
+    x.moveTo(cx-1.6*s,cy+2.5*s);x.lineTo(cx+3*s,cy+6*s);x.lineTo(cx+3*s,cy+10*s);x.stroke();            // emitter
+    x.fillStyle=col;x.beginPath();x.moveTo(cx+3*s,cy+6*s);x.lineTo(cx+.4*s,cy+5.6*s);x.lineTo(cx+1.8*s,cy+3.8*s);x.closePath();x.fill();
+    x.shadowBlur=0;x.strokeStyle=ink;x.lineWidth=.8;                                                     // anti-parallel diode
+    x.beginPath();x.moveTo(cx+3*s,cy-8*s);x.lineTo(cx+8*s,cy-8*s);x.lineTo(cx+8*s,cy+8*s);x.lineTo(cx+3*s,cy+8*s);x.moveTo(cx+5.6*s,cy-2*s);x.lineTo(cx+10.4*s,cy-2*s);x.stroke();
+    x.fillStyle=ink;x.beginPath();x.moveTo(cx+8*s,cy-2*s);x.lineTo(cx+5.6*s,cy+2*s);x.lineTo(cx+10.4*s,cy+2*s);x.closePath();x.fill()}
+  function diode(x,cx,cy,s,on,C,ink,up=true){const col=on?C.b:ink;x.strokeStyle=col;x.fillStyle=col;x.lineWidth=on?1.2:.8;if(on){x.shadowColor=C.b;x.shadowBlur=6}
+    x.beginPath();x.moveTo(cx,cy-9*s);x.lineTo(cx,cy+9*s);x.stroke();const d=up?-1:1;
+    x.beginPath();x.moveTo(cx,cy+d*3*s);x.lineTo(cx-3.4*s,cy-d*3*s);x.lineTo(cx+3.4*s,cy-d*3*s);x.closePath();x.fill();x.beginPath();x.moveTo(cx-3.4*s,cy+d*3*s);x.lineTo(cx+3.4*s,cy+d*3*s);x.stroke();x.shadowBlur=0}
+  function capS(x,cx,y1,y2,ink,lbl){const m=(y1+y2)/2;x.strokeStyle=ink;x.lineWidth=.9;x.beginPath();x.moveTo(cx,y1);x.lineTo(cx,m-2);x.moveTo(cx-6,m-2);x.lineTo(cx+6,m-2);x.moveTo(cx,y2);x.lineTo(cx,m+2.6);x.stroke();
+    x.beginPath();x.moveTo(cx-6,m+3.6);x.quadraticCurveTo(cx,m+1.4,cx+6,m+3.6);x.stroke();if(lbl){x.fillStyle=ink;x.font='600 7px "JetBrains Mono", monospace';x.textAlign='right';x.fillText(lbl,cx-7.5,m+2.5)}}
+  function rail(x,pts,on,C,ink,T){x.strokeStyle=ink;x.lineWidth=.9;poly(x,pts);
+    if(on){x.strokeStyle=C.b;x.lineWidth=1.3;x.setLineDash([2.5,4]);x.lineDashOffset=-(T*30)%13;x.globalAlpha=.9;poly(x,pts);x.setLineDash([]);x.globalAlpha=1}}
+  function triC(t){const q=t%1;return q<.5?-1+4*q:3-4*q}
+  function convIcon(x,p,on,C,type,lbl,T,sc){
+    x.save();x.translate(p[0],p[1]);x.scale(sc,sc);
+    const W=68,H=46,ink=on?'#c9d3d6':'#3e4a50';
+    if(on){x.fillStyle=C.c;x.globalAlpha=.10;x.beginPath();x.roundRect(-W-6,-H-6,2*W+12,2*H+12,14);x.fill();x.globalAlpha=1}
+    x.fillStyle=on?'#0f171b':'#0b1013';x.strokeStyle=on?C.c:C.line;x.lineWidth=on?1.4:1;x.beginPath();x.roundRect(-W,-H,2*W,2*H,10);x.fill();x.stroke();
+    x.strokeStyle='rgba(120,150,170,.08)';x.lineWidth=.5;for(let gx=-W+8;gx<W;gx+=8){x.beginPath();x.moveTo(gx,-H+2);x.lineTo(gx,H-2);x.stroke()}for(let gy=-H+8;gy<H;gy+=8){x.beginPath();x.moveTo(-W+2,gy);x.lineTo(W-2,gy);x.stroke()}
+    const car=triC(T*9),th=T*5,ph=[0,-TAU/3,TAU/3],PC=[C.a,C.b,C.c];
+    if(type==='inv2'||type==='npc'){
+      const npc=type==='npc',top=-36,bot=36,legs=[-14,14,42];
+      rail(x,[[-56,top],[48,top]],on,C,ink,T);rail(x,[[-56,bot],[48,bot]],on,C,ink,T);
+      if(npc){capS(x,-56,top,0,ink,'');capS(x,-56,0,bot,ink,'');x.strokeStyle=ink;x.setLineDash([1.5,1.5]);x.beginPath();x.moveTo(-56,0);x.lineTo(-24,0);x.stroke();x.setLineDash([]);
+        x.fillStyle=ink;x.font='600 7px "JetBrains Mono", monospace';x.textAlign='left';x.fillText('Vdc',-50,-24);x.fillText('N',-50,-2)}
+      else{capS(x,-56,top,bot,ink,'');x.fillStyle=ink;x.font='600 7px "JetBrains Mono", monospace';x.textAlign='left';x.fillText('Vdc',-50,3)}
+      x.fillStyle=on?C.ink:ink;x.font='700 8px "JetBrains Mono", monospace';x.textAlign='left';x.fillText('+',-64,top+3);x.fillText('−',-64,bot+3);
+      legs.forEach((lx,k)=>{const v=.85*Math.cos(th+ph[k]);
+        if(!npc){const up=v>car;igbt(x,lx,-18,.95,on,up,C,ink);igbt(x,lx,18,.95,on,!up,C,ink);
+          x.strokeStyle=ink;x.lineWidth=.9;x.beginPath();x.moveTo(lx+3,top);x.lineTo(lx+3,-27.5);x.moveTo(lx+3,-8.5);x.lineTo(lx+3,8.5);x.moveTo(lx+3,27.5);x.lineTo(lx+3,bot);x.stroke()}
+        else{const lv=v>Math.abs(car)?2:(v<-Math.abs(car)?0:1);const ys=[-27,-9.5,9.5,27];[lv===2,lv>=1,lv<=1,lv===0].forEach((g,j)=>igbt(x,lx,ys[j],.62,on,g,C,ink));
+          x.strokeStyle=ink;x.lineWidth=.9;x.beginPath();x.moveTo(lx+1.9,top);x.lineTo(lx+1.9,-33.2);x.moveTo(lx+1.9,-20.8);x.lineTo(lx+1.9,-15.7);x.moveTo(lx+1.9,-3.3);x.lineTo(lx+1.9,3.3);x.moveTo(lx+1.9,15.7);x.lineTo(lx+1.9,20.8);x.moveTo(lx+1.9,33.2);x.lineTo(lx+1.9,bot);x.stroke();
+          x.beginPath();x.moveTo(lx-8,0);x.lineTo(lx-8,-18);x.lineTo(lx+1.9,-18);x.moveTo(lx-8,0);x.lineTo(lx-8,18);x.lineTo(lx+1.9,18);x.stroke();
+          x.fillStyle=ink;x.beginPath();x.moveTo(lx-8,-9);x.lineTo(lx-10.2,-6);x.lineTo(lx-5.8,-6);x.closePath();x.fill();x.beginPath();x.moveTo(lx-8,9);x.lineTo(lx-10.2,12);x.lineTo(lx-5.8,12);x.closePath();x.fill()}
+        const ox=npc?lx+1.9:lx+3;x.strokeStyle=on?PC[k]:ink;x.lineWidth=1.1;x.beginPath();x.moveTo(ox,0);x.lineTo(ox+9,0);x.stroke();
+        if(on){x.setLineDash([1.6,2.4]);x.lineDashOffset=-(T*20)%4;x.lineWidth=1.6;x.beginPath();x.moveTo(ox,0);x.lineTo(ox+9,0);x.stroke();x.setLineDash([])}
+        x.fillStyle=on?PC[k]:ink;x.beginPath();x.arc(ox+10,0,1.8,0,TAU);x.fill();x.font='700 7px "JetBrains Mono", monospace';x.textAlign='center';x.fillText('UVW'[k],ox+10,-4)});
+    }else{ // isolated DC/DC: full bridge → HF transformer → diode bridge → C
+      const top=-34,bot=34,c=car>0;
+      rail(x,[[-60,top],[-26,top]],on,C,ink,T);rail(x,[[-60,bot],[-26,bot]],on,C,ink,T);rail(x,[[18,top],[56,top]],on,C,ink,T);rail(x,[[18,bot],[56,bot]],on,C,ink,T);
+      capS(x,-62,top,bot,ink,'');
+      igbt(x,-48,-17,.85,on,c,C,ink);igbt(x,-48,17,.85,on,!c,C,ink);igbt(x,-30,-17,.85,on,!c,C,ink);igbt(x,-30,17,.85,on,c,C,ink);
+      x.strokeStyle=ink;x.lineWidth=.9;[-48,-30].forEach(lx=>{x.beginPath();x.moveTo(lx+2.6,top);x.lineTo(lx+2.6,-25.5);x.moveTo(lx+2.6,-8.5);x.lineTo(lx+2.6,8.5);x.moveTo(lx+2.6,25.5);x.lineTo(lx+2.6,bot);x.stroke()});
+      // transformer
+      const pc=on?C.b:ink;x.strokeStyle=pc;x.lineWidth=1;x.beginPath();for(let i=0;i<4;i++)x.arc(-10,-12+i*8,4,-Math.PI/2,Math.PI/2);x.stroke();
+      x.beginPath();for(let i=0;i<4;i++)x.arc(2,-12+i*8,4,Math.PI/2,Math.PI*1.5);x.stroke();
+      x.strokeStyle=ink;x.lineWidth=.9;x.beginPath();x.moveTo(-4.8,-18);x.lineTo(-4.8,18);x.moveTo(-3.2,-18);x.lineTo(-3.2,18);x.stroke();
+      x.fillStyle=ink;x.beginPath();x.arc(-13,-17,1,0,TAU);x.arc(5,-17,1,0,TAU);x.fill();
+      x.beginPath();x.moveTo(-45.4,0);x.lineTo(-40,0);x.lineTo(-40,-16);x.lineTo(-10,-16);x.moveTo(-27.4,0);x.lineTo(-22,0);x.lineTo(-22,16);x.lineTo(-10,16);
+      x.moveTo(2,-16);x.lineTo(24,-16);x.lineTo(24,0);x.moveTo(2,16);x.lineTo(38,16);x.lineTo(38,0);x.stroke();
+      diode(x,24,-17,.9,on&&c,C,ink);diode(x,24,17,.9,on&&!c,C,ink);diode(x,38,-17,.9,on&&!c,C,ink);diode(x,38,17,.9,on&&c,C,ink);
+      x.beginPath();x.moveTo(24,top);x.lineTo(24,-26);x.moveTo(24,-8);x.lineTo(24,8);x.moveTo(24,26);x.lineTo(24,bot);x.moveTo(38,top);x.lineTo(38,-26);x.moveTo(38,-8);x.lineTo(38,8);x.moveTo(38,26);x.lineTo(38,bot);x.stroke();
+      capS(x,54,top,bot,ink,'');x.fillStyle=ink;x.font='600 7px "JetBrains Mono", monospace';x.textAlign='right';x.fillText('Vo',50,3);
+      x.textAlign='left';x.fillText('Vin',-58,3);
+      x.fillStyle=on?C.ink:ink;x.font='600 6px "JetBrains Mono", monospace';x.textAlign='center';x.fillText('HF',-4,-21);
+    }
+    x.textAlign='center';x.fillStyle=on?C.c:'#4a585e';x.font='600 11px "JetBrains Mono", monospace';x.fillText(lbl,0,H+15);
+    x.restore()}
+
+  /* ===== layout ===== */
+  let LAY=null;
+  function layout(){
+    const w=stage.clientWidth, narrow=w<720;
+    const VW=narrow?420:1200, VH=narrow?1740:900;
+    heart.style.height=Math.round(w*VH/VW)+'px';
+    const L={narrow,VW,VH,cards:[]};
+    if(!narrow){
+      L.M={x:600,y:450,r:88};
+      const cw=262,ch=178,rx=440,ry=340;
+      for(let k=0;k<NAPP;k++){const ang=-Math.PI/2+k*TAU/NAPP;const cx=600+rx*Math.cos(ang),cy=450+ry*Math.sin(ang);
+        const card={x:cx-cw/2,y:cy-ch/2,w:cw,h:ch};
+        const dx=cx-600,dy=cy-450;const tx=dx?((dx>0?card.x:card.x+cw)-600)/dx:Infinity,ty=dy?((dy>0?card.y:card.y+ch)-450)/dy:Infinity;const t=Math.min(Math.abs(tx),Math.abs(ty));
+        const E=[600+dx*t,450+dy*t];const u=Math.hypot(dx,dy);const S=[600+dx/u*(L.M.r+14),450+dy/u*(L.M.r+14)];
+        card.path=[S,E];card.conv=[S[0]+(E[0]-S[0])*.56,S[1]+(E[1]-S[1])*.56];L.cards.push(card)}
+    }else{
+      L.M={x:210,y:128,r:72};
+      const top=274,step=182,cw=290,ch=158,cx0=122;
+      for(let k=0;k<NAPP;k++){const y=top+k*step;const card={x:cx0,y,w:cw,h:ch};const yc=y+ch/2;
+        card.path=[[20,0],[20,yc],[cx0,yc]];card.conv=[68,yc];L.cards.push(card)}
+    }
+    L.cards.forEach(c=>{const bx=c.x+8,by=c.y+26,bw=c.w-16,bh=c.h-46;const sc=Math.min(bw/200,bh/100);c.box={x:bx+(bw-200*sc)/2,y:by+(bh-100*sc)/2,s:sc}});
+    LAY=L;
+  }
+  const toV=(c,p)=>[c.box.x+p[0]*c.box.s,c.box.y+p[1]*c.box.s];
+
+  function waveAlong(x,pts,f,T,C,alpha,amp){
+    if(f<=0)return;const segs=[];let total=0;for(let i=1;i<pts.length;i++){const d=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);segs.push(d);total+=d}
+    const Lmax=total*f,N=Math.max(2,Math.floor(Lmax/2));
+    const at=d=>{let acc=0;for(let i=0;i<segs.length;i++){if(acc+segs[i]>=d||i===segs.length-1){const r=segs[i]?(d-acc)/segs[i]:0;const a=pts[i],b=pts[i+1];const tx=(b[0]-a[0])/(segs[i]||1),ty=(b[1]-a[1])/(segs[i]||1);return [a[0]+(b[0]-a[0])*r,a[1]+(b[1]-a[1])*r,-ty,tx]}acc+=segs[i]}};
+    [C.a,C.b,C.c].forEach((col,ph)=>{x.strokeStyle=col;x.globalAlpha=alpha;x.lineWidth=2;x.beginPath();
+      for(let i=0;i<=N;i++){const d=Lmax*i/N;const [px,py,nx,ny]=at(d);const env=Math.sin(Math.PI/2*Math.min(1,d/18,(Lmax-d)/18+(f>=1?1:0)));
+        const v=amp*env*Math.sin(d/13-T*9-ph*TAU/3);i?x.lineTo(px+nx*v,py+ny*v):x.moveTo(px+nx*v,py+ny*v)}x.stroke()});
+    x.globalAlpha=1;
+    if(f<1){const [px,py]=at(Lmax);x.fillStyle=C.b;x.beginPath();x.arc(px,py,4,0,TAU);x.fill();x.globalAlpha=.3;x.beginPath();x.arc(px,py,9,0,TAU);x.fill();x.globalAlpha=1}
+  }
+
+  /* ===== realistic PMSM cross-section ===== */
+  function heartMotor(x,cx,cy,R,T,beat,C){
+    const thm=reduce?.35:T*1.5, the=2*thm;
+    x.strokeStyle=C.a;x.globalAlpha=.28*beat;x.lineWidth=2;x.beginPath();x.arc(cx,cy,R+14+beat*16,0,TAU);x.stroke();x.globalAlpha=1;
+    let g=x.createRadialGradient(cx,cy,R*.2,cx,cy,R*1.8);g.addColorStop(0,'rgba(255,122,92,'+(.10+.12*beat)+')');g.addColorStop(1,'rgba(255,122,92,0)');x.fillStyle=g;x.beginPath();x.arc(cx,cy,R*1.8,0,TAU);x.fill();
+    // aluminium housing with fins
+    for(let i=0;i<56;i++){const a=i*TAU/56;x.save();x.translate(cx,cy);x.rotate(a);g=x.createLinearGradient(R-1,0,R+7,0);g.addColorStop(0,'#7b858a');g.addColorStop(1,'#2c3337');x.fillStyle=g;x.beginPath();x.roundRect(R-2,-.9,9,1.8,.9);x.fill();x.restore()}
+    x.strokeStyle='#59636850';x.lineWidth=1;x.beginPath();x.arc(cx,cy,R+7.5,0,TAU);x.stroke();
+    g=x.createLinearGradient(cx-R,cy-R,cx+R,cy+R);g.addColorStop(0,'#d7dee1');g.addColorStop(.45,'#8f999e');g.addColorStop(1,'#3e474b');x.fillStyle=g;x.beginPath();x.arc(cx,cy,R,0,TAU);x.fill();
+    // stator laminations
+    g=x.createRadialGradient(cx-R*.2,cy-R*.25,R*.3,cx,cy,R*.94);g.addColorStop(0,'#5b656a');g.addColorStop(1,'#262d31');x.fillStyle=g;x.beginPath();x.arc(cx,cy,R*.9,0,TAU);x.arc(cx,cy,R*.6,0,TAU,true);x.fill();
+    x.strokeStyle='rgba(0,0,0,.25)';x.lineWidth=.5;for(let k=0;k<6;k++){x.beginPath();x.arc(cx,cy,R*(.62+k*.05),0,TAU);x.stroke()}
+    const seq=[[0,1],[2,-1],[1,1],[0,-1],[2,1],[1,-1]],sh=[0,-TAU/3,TAU/3],PC=[C.a,C.b,C.c];
+    for(let k=0;k<12;k++){const a=k*TAU/12+TAU/24;const [p,sg]=seq[k%6];const v=sg*Math.cos(the+sh[p]);
+      const ri=R*.6,rm=R*.66,ro=R*.86;
+      x.beginPath();x.moveTo(cx+Math.cos(a-.045)*ri,cy+Math.sin(a-.045)*ri);x.lineTo(cx+Math.cos(a-.045)*rm,cy+Math.sin(a-.045)*rm);
+      x.lineTo(cx+Math.cos(a-.125)*rm,cy+Math.sin(a-.125)*rm);x.arc(cx,cy,ro,a-.15,a+.15);x.lineTo(cx+Math.cos(a+.125)*rm,cy+Math.sin(a+.125)*rm);
+      x.lineTo(cx+Math.cos(a+.045)*rm,cy+Math.sin(a+.045)*rm);x.lineTo(cx+Math.cos(a+.045)*ri,cy+Math.sin(a+.045)*ri);x.closePath();
+      x.fillStyle='#0a0e10';x.fill();
+      // copper coil
+      x.save();x.beginPath();x.moveTo(cx+Math.cos(a-.12)*R*.68,cy+Math.sin(a-.12)*R*.68);x.arc(cx,cy,R*.845,a-.14,a+.14);x.lineTo(cx+Math.cos(a+.12)*R*.68,cy+Math.sin(a+.12)*R*.68);x.closePath();x.clip();
+      const pc=[cx+Math.cos(a)*R*.76,cy+Math.sin(a)*R*.76];g=x.createRadialGradient(pc[0]-R*.03,pc[1]-R*.03,0,pc[0],pc[1],R*.12);g.addColorStop(0,'#f4b27a');g.addColorStop(.5,'#b8642f');g.addColorStop(1,'#5e2c10');
+      x.fillStyle=g;x.fillRect(pc[0]-R*.2,pc[1]-R*.2,R*.4,R*.4);
+      x.strokeStyle='rgba(60,25,8,.6)';x.lineWidth=.6;for(let j=0;j<5;j++){x.beginPath();x.arc(cx,cy,R*(.70+j*.03),a-.14,a+.14);x.stroke()}
+      x.globalCompositeOperation='lighter';x.fillStyle=PC[p];x.globalAlpha=.55*Math.abs(v);x.fillRect(pc[0]-R*.2,pc[1]-R*.2,R*.4,R*.4);x.globalAlpha=1;x.globalCompositeOperation='source-over';x.restore();
+      const q=R*.03;x.strokeStyle='#f6efe6';x.fillStyle='#f6efe6';x.lineWidth=1.1;x.globalAlpha=.85;
+      if(v>=0){x.beginPath();x.arc(pc[0],pc[1],q*.7,0,TAU);x.fill()}else{x.beginPath();x.moveTo(pc[0]-q,pc[1]-q);x.lineTo(pc[0]+q,pc[1]+q);x.moveTo(pc[0]+q,pc[1]-q);x.lineTo(pc[0]-q,pc[1]+q);x.stroke()}x.globalAlpha=1}
+    // airgap + rotor
+    x.fillStyle='#050708';x.beginPath();x.arc(cx,cy,R*.585,0,TAU);x.fill();
+    const Rr=R*.555;g=x.createRadialGradient(cx-Rr*.3,cy-Rr*.3,Rr*.1,cx,cy,Rr);g.addColorStop(0,'#6d777c');g.addColorStop(1,'#2a3135');x.fillStyle=g;x.beginPath();x.arc(cx,cy,Rr,0,TAU);x.fill();
+    for(let i=0;i<4;i++){const a=thm+i*TAU/4;x.save();x.beginPath();x.arc(cx,cy,Rr-1,a-.62,a+.62);x.arc(cx,cy,Rr*.8,a+.62,a-.62,true);x.closePath();x.clip();
+      g=x.createLinearGradient(cx+Math.cos(a-.6)*Rr,cy+Math.sin(a-.6)*Rr,cx+Math.cos(a+.6)*Rr,cy+Math.sin(a+.6)*Rr);g.addColorStop(0,'#5d666b');g.addColorStop(.5,'#c9d0d3');g.addColorStop(1,'#5d666b');x.fillStyle=g;x.fillRect(cx-Rr,cy-Rr,2*Rr,2*Rr);
+      x.fillStyle=i%2?C.c:C.a;x.globalAlpha=.32;x.fillRect(cx-Rr,cy-Rr,2*Rr,2*Rr);x.globalAlpha=1;x.restore();
+      x.fillStyle='#1a1f22';x.font=`700 ${Math.round(R*.1)}px "JetBrains Mono", monospace`;x.textAlign='center';x.textBaseline='middle';x.fillText(i%2?'S':'N',cx+Math.cos(a)*Rr*.9,cy+Math.sin(a)*Rr*.9)}
+    x.textBaseline='alphabetic';
+    x.fillStyle='#14191c';for(let i=0;i<4;i++){const a=thm+TAU/8+i*TAU/4;x.beginPath();x.ellipse(cx+Math.cos(a)*Rr*.5,cy+Math.sin(a)*Rr*.5,R*.065,R*.035,a+Math.PI/2,0,TAU);x.fill()}
+    g=x.createRadialGradient(cx-R*.04,cy-R*.04,0,cx,cy,R*.13);g.addColorStop(0,'#ffffff');g.addColorStop(.6,'#aab3b8');g.addColorStop(1,'#5d676c');x.fillStyle=g;x.beginPath();x.arc(cx,cy,R*.12,0,TAU);x.fill();
+    x.fillStyle='#14191c';x.save();x.translate(cx,cy);x.rotate(thm);x.fillRect(R*.07,-R*.025,R*.05,R*.05);x.restore();
+    // specular
+    x.strokeStyle='rgba(255,255,255,.35)';x.lineWidth=1.4;x.beginPath();x.arc(cx,cy,R-1.5,Math.PI*1.08,Math.PI*1.42);x.stroke();
+  }
+
+  function drawHeart(T){
+    if(!LAY)layout();
+    const d=window.devicePixelRatio||1,cw=heart.clientWidth,chh=heart.clientHeight;
+    heart.width=Math.round(cw*d);heart.height=Math.round(chh*d);const x=heart.getContext('2d');
+    const k=cw/LAY.VW;x.setTransform(d*k,0,0,d*k,0,0);
+    const C={ink:css('--ink'),muted:css('--muted'),line:css('--line'),a:css('--pa'),b:css('--pb'),c:css('--pc'),dim:'#3a474d'};
+    x.clearRect(0,0,LAY.VW,LAY.VH);
+    const t=reduce?CYCLE-.01:(T%CYCLE);const allDone=t>=STEP*NAPP;const active=Math.min(NAPP-1,Math.floor(t/STEP));const p=(t-active*STEP)/STEP;
+    const M=LAY.M;
+    const trunkY=M.y+M.r+30;
+    if(LAY.narrow){x.strokeStyle=C.line;x.lineWidth=1;x.setLineDash([2,4]);x.beginPath();x.moveTo(M.x,M.y+M.r);x.lineTo(M.x,trunkY);x.lineTo(20,trunkY);x.lineTo(20,LAY.cards[NAPP-1].y+LAY.cards[NAPP-1].h/2);x.stroke();x.setLineDash([])}
+    LAY.cards.forEach((c,i)=>{
+      const done=allDone||i<active,cur=!allDone&&i===active;const prog=done?1:(cur?p:0);
+      const fA=clamp01(prog/.36),fB=clamp01((prog-.36)/.16),spread=done?1:clamp01((prog-.52)/.4),run=done?1:clamp01((prog-.52)/.15);
+      let path=c.path;if(LAY.narrow){path=[[M.x,M.y+M.r],[M.x,trunkY],[20,trunkY]].concat(c.path.slice(1))}
+      x.strokeStyle=C.line;x.lineWidth=1;x.setLineDash([2,4]);poly(x,path);x.setLineDash([]);
+      waveAlong(x,path,fA,reduce?0:T,C,done?.55:1,LAY.narrow?5:7);
+      const on=spread>0,app=APPS[i];
+      x.fillStyle=on?'#10171b':'#0c1215';x.strokeStyle=on?C.b:C.line;x.lineWidth=on?1.4:1;
+      x.beginPath();x.roundRect(c.x,c.y,c.w,c.h,10);x.fill();x.stroke();
+      x.textAlign='left';x.fillStyle=on?C.ink:C.muted;x.font='700 15px "Archivo", sans-serif';x.fillText(app.n,c.x+12,c.y+19);
+      x.fillStyle=on?C.c:'#4a585e';x.font='500 10.5px "JetBrains Mono", monospace';x.fillText(app.topo,c.x+12,c.y+c.h-9);
+      x.fillStyle=on?C.b:'#4a585e';x.textAlign='right';x.font='500 10px "JetBrains Mono", monospace';x.fillText(String(i+1).padStart(2,'0'),c.x+c.w-12,c.y+19);
+      // illustration
+      x.save();x.beginPath();x.roundRect(c.x+1,c.y+24,c.w-2,c.h-44,4);x.clip();
+      x.translate(c.box.x,c.box.y);x.scale(c.box.s,c.box.s);
+      const st={T:reduce?.6:T,run:reduce?1:run,spread,wheels:app.wheels};
+      x.globalAlpha=on?.35+.65*clamp01(spread*2.2):.32;
+      if(app.img.complete&&app.img.naturalWidth)x.drawImage(app.img,0,0,200,100);
+      app.dyn(x,st,C);x.globalAlpha=1;
+      if(spread>0){x.strokeStyle=C.b;x.lineWidth=1.05;x.lineJoin='round';x.shadowColor=C.b;x.shadowBlur=6;x.globalAlpha=.8;app.traces(st).forEach(tr=>partial(x,tr,clamp01(spread*1.25)));x.shadowBlur=0;x.globalAlpha=1}
+      if(fB>=1){const [ax,ay]=app.core;x.fillStyle=C.b;x.globalAlpha=.25;x.beginPath();x.arc(ax,ay,7,0,TAU);x.fill();x.globalAlpha=1;x.strokeStyle=C.b;x.lineWidth=1.2;x.beginPath();x.arc(ax,ay,3.6,0,TAU);x.stroke()}
+      x.restore();
+      const core=toV(c,app.core);const E=c.path[c.path.length-1];
+      if(fB>0&&fB<1)waveAlong(x,[E,core],fB,reduce?0:T,C,.9,4);
+      convIcon(x,c.conv,fA>=(LAY.narrow?.9:.6),C,app.ct,LAY.narrow?app.cl.split(' · ')[0]:app.cl,reduce?.3:T,LAY.narrow?.72:.86);
+      if(appsEl[i])appsEl[i].classList.toggle('on',on);
+    });
+    const hb=(T%1.1);const beat=reduce?0:Math.exp(-(hb*hb)/.004)+.7*Math.exp(-((hb-.22)**2)/.004);
+    heartMotor(x,M.x,M.y,M.r,T,beat,C);
+    const PC=[C.a,C.b,C.c];
+    const lab=(lx,ly,al)=>{x.textAlign=al;x.fillStyle=C.ink;x.font='700 13px "JetBrains Mono", monospace';x.fillText('3φ PMSM',lx,ly);
+      x.font='600 11px "JetBrains Mono", monospace';['U','V','W'].forEach((tt,i)=>{x.fillStyle=PC[i];x.fillText(tt,lx+(al==='left'?i*14:(i-1)*14),ly+16)})};
+    if(LAY.narrow)lab(M.x+M.r+18,M.y-2,'left');else{const la=Math.PI*.625;lab(M.x+(M.r+38)*Math.cos(la),M.y+(M.r+38)*Math.sin(la),'center')}
+  }
+  window.addEventListener('resize',()=>{LAY=null;layout()});
+  layout();
+
+  /* ---------- PWM LAB ---------- */
+  const wave=document.getElementById('wave'),hex=document.getElementById('hex'),slfC=document.getElementById('slf'),hdfC=document.getElementById('hdf');
+  const miIn=document.getElementById('mi'),phIn=document.getElementById('phi'),psIn=document.getElementById('psi'),eqIn=document.getElementById('eqsw');
+  const out=id=>document.getElementById(id);
+  let mode='svpwm',m=.9,phi=30*Math.PI/180,psi=60*Math.PI/180;const MF=18;
+  const MODES={
+    spwm:{n:'SPWM',lim:1,d:'Sinusoidal PWM · offset = 0. 가장 단순하지만 선형 영역이 M<sub>i</sub> ≤ 1에서 끝나고 DC bus를 다 쓰지 못합니다.'},
+    thipwm:{n:'THIPWM',lim:2/Math.sqrt(3),d:'Third-harmonic injection · offset = −(M<sub>i</sub>/6)·cos3θ. 상전압 peak를 눌러 선형 영역을 M<sub>i</sub> 1.155까지 15.5% 넓힙니다. 3차 성분은 선간전압에서 상쇄됩니다.'},
+    svpwm:{n:'SVPWM',lim:2/Math.sqrt(3),d:'Min-max offset = −(v<sub>max</sub>+v<sub>min</sub>)/2. 영벡터 V0·V7을 반씩 나눠 쓰는 것과 같고, 낮은 M<sub>i</sub>에서 harmonic 특성이 가장 좋습니다.'},
+    dpwm0:{n:'DPWM0',dl:-Math.PI/6,lim:2/Math.sqrt(3),d:'60° clamp, peak보다 30° 앞쪽(60° − 30°). 진상 부하(φ ≈ −30°)에서 전류 peak와 clamp 구간이 겹쳐 switching loss가 가장 작아집니다.'},
+    dpwm1:{n:'DPWM1',dl:0,lim:2/Math.sqrt(3),d:'60° clamp, 각 상 peak 중심. 역률 1(φ ≈ 0) 근처에서 전류가 가장 큰 구간에 스위칭을 멈춰 손실을 줄입니다.'},
+    dpwm2:{n:'DPWM2',dl:Math.PI/6,lim:2/Math.sqrt(3),d:'60° clamp, peak보다 30° 뒤쪽(60° + 30°). 유도성 부하(φ ≈ +30°), 즉 일반적인 motor drive에서 유리합니다.'},
+    dpwm3:{n:'DPWM3',lim:2/Math.sqrt(3),d:'30° clamp × 4 per cycle. 크기가 중간인 상을 기준으로 clamp해 높은 M<sub>i</sub>에서 harmonic 측면이 좋습니다.'},
+    dpwmmax:{n:'DPWMMAX',lim:2/Math.sqrt(3),d:'120° clamp to +V<sub>dc</sub>/2 · offset = 1 − v<sub>max</sub>. 구현은 단순하지만 상단 소자에 conduction loss가 몰립니다.'},
+    dpwmmin:{n:'DPWMMIN',lim:2/Math.sqrt(3),d:'120° clamp to −V<sub>dc</sub>/2 · offset = −1 − v<sub>min</sub>. 하단 소자 쪽으로 손실이 몰리고 bootstrap gate driver에 유리합니다.'},
+    gdpwm:{n:'GDPWM',lim:2/Math.sqrt(3),d:'Generalized DPWM (Hava, Kerkman, Lipo) · modulator phase angle ψ로 60° clamp 구간을 연속적으로 옮깁니다. ψ = 30°+φ로 두면 clamp가 전류 peak에 놓여 SLF가 최소가 되고, ψ = 0·30·60°가 각각 DPWM0·1·2와 같습니다.'}
+  };
+  const disc=k=>!['spwm','thipwm','svpwm'].includes(k);
+  const triW=t=>{const q=((t%1)+1)%1;return q<.5?-1+4*q:3-4*q};
+  function offsetOf(md,v,th,mm){const mx=Math.max(v[0],v[1],v[2]),mn=Math.min(v[0],v[1],v[2]);
+    switch(md){case'spwm':return 0;case'thipwm':return -(mm/6)*Math.cos(3*th);case'svpwm':return -(mx+mn)/2;
+      case'dpwmmax':return 1-mx;case'dpwmmin':return -1-mn;case'dpwm3':return Math.abs(mx)<Math.abs(mn)?1-mx:-1-mn;
+      default:{const dl=md==='gdpwm'?psi-Math.PI/6:MODES[md].dl;let j=0,b=-1;for(let k=0;k<3;k++){const s=Math.abs(Math.cos(th-k*TAU/3-dl));if(s>b){b=s;j=k}}
+        const sg=Math.cos(th-j*TAU/3-dl)>=0?1:-1;return sg-v[j]}}}
+  const refs=(th,mm)=>[mm*Math.cos(th),mm*Math.cos(th-TAU/3),mm*Math.cos(th+TAU/3)];
+  const cl1=x=>Math.max(-1,Math.min(1,x));
+  function poles(md,th,mm){const v=refs(th,mm),o=offsetOf(md,v,th,mm);return [cl1(v[0]+o),cl1(v[1]+o),cl1(v[2]+o),o]}
+  function slf(md,mm,ph){let a=0,b=0;const N=720;for(let i=0;i<N;i++){const th=i/N*TAU,c=Math.abs(Math.cos(th-ph));b+=c;if(Math.abs(poles(md,th,mm)[0])<.999)a+=c}return a/b}
+  function clampFrac(md,mm){let n=0;const N=720;for(let i=0;i<N;i++)if(Math.abs(poles(md,i/N*TAU,mm)[0])>=.999)n++;return n/N}
+  function hflux(md,mm,R){ // per-carrier ripple flux (Hava's harmonic flux): ripple about each carrier-cycle average, RMS over a fundamental
+    const spc=120,Ts=TAU/R,d=Ts/spc;let s2=0,n2=0;const vn=new Float64Array(spc),lam=new Float64Array(spc);
+    for(let n=0;n<R;n++){const p=poles(md,(n+.5)*Ts,mm);let avg=0;
+      for(let j=0;j<spc;j++){const c=triW((j+.5)/spc);const sa=p[0]>=c?1:-1,sb=p[1]>=c?1:-1,sc=p[2]>=c?1:-1;vn[j]=(2*sa-sb-sc)/3;avg+=vn[j]}
+      avg/=spc;let L=0,mu=0;for(let j=0;j<spc;j++){L+=(vn[j]-avg)*d;lam[j]=L;mu+=L}mu/=spc;
+      for(let j=0;j<spc;j++){const e=lam[j]-mu;s2+=e*e;n2++}}
+    return Math.sqrt(s2/n2)*36}
+  const MIG=Array.from({length:23},(_,i)=>.05+i*.05);
+  let curveH=null,baseH=null,curveKey='';
+  function hdfCurve(){const R0=36,R=eqIn.checked&&disc(mode)?R0*1.5:R0;const key=mode+'|'+(mode==='gdpwm'?psi.toFixed(3):'')+'|'+R;
+    if(key!==curveKey){curveKey=key;curveH=MIG.map(mm=>mm>MODES[mode].lim+1e-6?null:hflux(mode,mm,R));}
+    if(!baseH)baseH=MIG.map(mm=>hflux('svpwm',mm,R0));return [curveH,baseH]}
+  function setup(c){const d=window.devicePixelRatio||1,r=c.getBoundingClientRect();c.width=Math.round(r.width*d);c.height=Math.round(r.height*d);const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);return [x,r.width,r.height]}
+  const Cs=()=>({ink:css('--ink'),muted:css('--muted'),line:css('--line'),a:css('--pa'),b:css('--pb'),c:css('--pc')});
+
+  function drawWave(th0){
+    const [x,W,H]=setup(wave),C=Cs();const L=54,R=W-12,top=16,h1=176,g0=top+h1+26,gh=36;const xs=t=>L+(t/TAU)*(R-L),ys=v=>top+h1/2-v*(h1/2-6);
+    x.clearRect(0,0,W,H);x.font='10px "JetBrains Mono", monospace';x.fillStyle=C.muted;x.strokeStyle=C.line;x.lineWidth=1;
+    [-1,0,1].forEach(v=>{x.beginPath();x.moveTo(L,ys(v));x.lineTo(R,ys(v));x.stroke()});for(let k=0;k<=12;k++){const X=xs(k*TAU/12);x.globalAlpha=k%2?.4:1;x.beginPath();x.moveTo(X,top);x.lineTo(X,top+h1);x.stroke()}x.globalAlpha=1;
+    x.fillText('+Vdc/2',0,ys(1)+3);x.fillText('0',L-12,ys(0)+3);x.fillText('−Vdc/2',0,ys(-1)+3);
+    const N=Math.max(240,Math.floor(R-L));
+    x.globalAlpha=.22;x.strokeStyle=C.muted;x.beginPath();for(let i=0;i<=N*3;i++){const t=i/(N*3)*TAU;const Y=ys(triW(t/TAU*MF));i?x.lineTo(xs(t),Y):x.moveTo(xs(t),Y)}x.stroke();x.globalAlpha=1;
+    x.fillStyle=C.a;x.globalAlpha=.12;for(let i=0;i<N;i++){const t=i/N*TAU;if(Math.abs(poles(mode,t,m)[0])>=.999)x.fillRect(xs(t),top,(R-L)/N+.6,h1)}x.globalAlpha=1;
+    // phase current (load angle phi)
+    x.strokeStyle='#e9eef0';x.globalAlpha=.55;x.setLineDash([1.5,3]);x.lineWidth=1.3;x.beginPath();for(let i=0;i<=N;i++){const t=i/N*TAU;const Y=ys(.82*Math.cos(t-phi));i?x.lineTo(xs(t),Y):x.moveTo(xs(t),Y)}x.stroke();x.setLineDash([]);x.globalAlpha=1;
+    x.strokeStyle=C.muted;x.setLineDash([4,4]);x.lineWidth=1.2;x.beginPath();for(let i=0;i<=N;i++){const t=i/N*TAU;const Y=ys(Math.max(-1.08,Math.min(1.08,poles(mode,t,m)[3])));i?x.lineTo(xs(t),Y):x.moveTo(xs(t),Y)}x.stroke();x.setLineDash([]);
+    [C.a,C.b,C.c].forEach((col,k)=>{x.strokeStyle=col;x.lineWidth=k?1.5:2.3;x.beginPath();for(let i=0;i<=N;i++){const t=i/N*TAU;const Y=ys(poles(mode,t,m)[k]);i?x.lineTo(xs(t),Y):x.moveTo(xs(t),Y)}x.stroke()});
+    x.fillStyle=C.muted;x.fillText('S',L-22,g0+gh/2+3);x.font='8px "JetBrains Mono", monospace';x.fillText('a',L-15,g0+gh/2+6);
+    x.strokeStyle=C.ink;x.lineWidth=1.2;x.beginPath();const NG=Math.floor((R-L)*2);for(let i=0;i<=NG;i++){const t=i/NG*TAU;const on=poles(mode,t,m)[0]>=triW(t/TAU*MF);const Y=on?g0:g0+gh;i?x.lineTo(xs(t),Y):x.moveTo(xs(t),Y)}x.stroke();
+    x.font='10px "JetBrains Mono", monospace';x.fillStyle=C.muted;['0°','60','120','180','240','300','360°'].forEach((s,k)=>x.fillText(s,xs(k*TAU/6)-(k===6?24:k?8:0),H-5));
+    x.textAlign='right';x.fillStyle='#e9eef0';x.globalAlpha=.7;x.fillText('i_a (φ)',R,top+10);x.globalAlpha=1;x.textAlign='left';
+    const t=th0%TAU;x.strokeStyle=C.ink;x.globalAlpha=.5;x.beginPath();x.moveTo(xs(t),top);x.lineTo(xs(t),g0+gh);x.stroke();x.globalAlpha=1;
+  }
+  function drawHex(th0){const [x,W,H]=setup(hex),C=Cs();const cx=W/2,cy=H/2,Rh=Math.min(W,H)/2-18;x.clearRect(0,0,W,H);
+    const V=k=>[cx+Rh*Math.cos(k*TAU/6),cy-Rh*Math.sin(k*TAU/6)];
+    const th=th0%TAU,sec=Math.floor(th/(TAU/6))%6;const a=V(sec),b=V(sec+1);x.fillStyle=C.c;x.globalAlpha=.1;x.beginPath();x.moveTo(cx,cy);x.lineTo(a[0],a[1]);x.lineTo(b[0],b[1]);x.closePath();x.fill();x.globalAlpha=1;
+    x.strokeStyle=C.line;x.lineWidth=1;x.beginPath();for(let k=0;k<=6;k++){const p=V(k);k?x.lineTo(p[0],p[1]):x.moveTo(p[0],p[1])}x.stroke();for(let k=0;k<6;k++){const p=V(k);x.beginPath();x.moveTo(cx,cy);x.lineTo(p[0],p[1]);x.stroke()}
+    x.setLineDash([3,3]);x.beginPath();x.arc(cx,cy,Rh*Math.sqrt(3)/2,0,TAU);x.stroke();x.setLineDash([]);
+    x.fillStyle=C.muted;x.font='9px "JetBrains Mono", monospace';x.textAlign='center';for(let k=0;k<6;k++){const p=[cx+(Rh+10)*Math.cos(k*TAU/6),cy-(Rh+10)*Math.sin(k*TAU/6)+3];x.fillText('V'+(k+1),p[0],p[1])}
+    x.fillText('V0·V7',cx,cy+14);
+    const Lr=Math.min(.75*m,.98)*Rh;x.strokeStyle=C.muted;x.globalAlpha=.4;x.beginPath();x.arc(cx,cy,.75*m*Rh,0,TAU);x.stroke();x.globalAlpha=1;
+    x.strokeStyle=C.ink;x.lineWidth=2;x.beginPath();x.moveTo(cx,cy);x.lineTo(cx+Lr*Math.cos(th),cy-Lr*Math.sin(th));x.stroke();x.fillStyle=C.ink;x.beginPath();x.arc(cx+Lr*Math.cos(th),cy-Lr*Math.sin(th),3,0,TAU);x.fill();
+    x.textAlign='left';x.fillStyle=C.muted;x.fillText('sector '+(sec+1),6,12)}
+  function chart(c,xsA,curves,xMark,o){const [x,W,H]=setup(c),C=Cs();const L=40,R=W-10,T=12,B=H-24;x.clearRect(0,0,W,H);
+    const xs=v=>L+(v-o.x0)/(o.x1-o.x0)*(R-L),ys=v=>B-(v-o.y0)/(o.y1-o.y0)*(B-T);
+    x.strokeStyle=C.line;x.lineWidth=1;x.font='9.5px "JetBrains Mono", monospace';x.fillStyle=C.muted;
+    o.yt.forEach(v=>{x.beginPath();x.moveTo(L,ys(v));x.lineTo(R,ys(v));x.stroke();x.textAlign='right';x.fillText(o.yf(v),L-5,ys(v)+3)});
+    o.xt.forEach(v=>{x.beginPath();x.moveTo(xs(v),T);x.lineTo(xs(v),B);x.globalAlpha=.4;x.stroke();x.globalAlpha=1;x.textAlign='center';x.fillText(o.xf(v),xs(v),H-8)});
+    curves.forEach(cv=>{x.strokeStyle=cv.col;x.lineWidth=cv.w||1.6;x.setLineDash(cv.dash||[]);x.beginPath();let st=false;
+      cv.y.forEach((v,i)=>{if(v==null){st=false;return}const X=xs(xsA[i]),Y=ys(Math.min(o.y1,v));st?x.lineTo(X,Y):x.moveTo(X,Y);st=true});x.stroke();x.setLineDash([]);
+      if(cv.fill){x.globalAlpha=.10;x.fillStyle=cv.col;x.beginPath();let f=false,lx=0;cv.y.forEach((v,i)=>{if(v==null)return;const X=xs(xsA[i]),Y=ys(Math.min(o.y1,v));if(!f){x.moveTo(X,B);f=true}x.lineTo(X,Y);lx=X});x.lineTo(lx,B);x.closePath();x.fill();x.globalAlpha=1}});
+    if(xMark){x.strokeStyle=C.ink;x.globalAlpha=.5;x.setLineDash([2,3]);x.beginPath();x.moveTo(xs(xMark.x),T);x.lineTo(xs(xMark.x),B);x.stroke();x.setLineDash([]);x.globalAlpha=1;
+      if(xMark.y!=null){x.fillStyle=C.b;x.beginPath();x.arc(xs(xMark.x),ys(Math.min(o.y1,xMark.y)),4,0,TAU);x.fill();x.strokeStyle='#0a0e10';x.lineWidth=1.5;x.stroke()}}
+    x.textAlign='left';(o.leg||[]).forEach((l,i)=>{x.fillStyle=l.col;x.fillRect(L+6+i*92,T+2,10,2.5);x.fillStyle=C.muted;x.fillText(l.t,L+20+i*92,T+6)})}
+  const PHG=Array.from({length:61},(_,i)=>-90+i*3);
+  let dirty=true;
+  function refreshCharts(){const C=Cs();const mm=Math.min(m,MODES[mode].lim);
+    const sl=PHG.map(p=>slf(mode,mm,p*Math.PI/180));const cur=slf(mode,mm,phi);
+    chart(slfC,PHG,[{y:PHG.map(()=>1),col:C.muted,dash:[4,4],w:1.2},{y:sl,col:C.b,fill:true,w:2}],{x:phi*180/Math.PI,y:cur},
+      {x0:-90,x1:90,y0:.4,y1:1.05,yt:[.5,.6,.7,.8,.9,1],yf:v=>v.toFixed(1),xt:[-90,-60,-30,0,30,60,90],xf:v=>v+'°',leg:[{t:'CPWM = 1',col:C.muted},{t:MODES[mode].n,col:C.b}]});
+    const [hc,hb]=hdfCurve();let iM=Math.round((m-.05)/.05);iM=Math.max(0,Math.min(22,iM));const ymax=Math.max(...hb,...hc.filter(v=>v!=null))*1.08;
+    chart(hdfC,MIG,[{y:hb,col:C.muted,dash:[4,4],w:1.2},{y:hc,col:C.c,fill:true,w:2}],{x:m,y:hc[iM]},
+      {x0:0,x1:1.2,y0:0,y1:ymax,yt:[0,ymax/4,ymax/2,3*ymax/4].map(v=>+v.toFixed(3)),yf:v=>v.toFixed(2),xt:[0,.2,.4,.6,.8,1,1.155],xf:v=>v===1.155?'1.15':v.toFixed(1),leg:[{t:'SVPWM',col:C.muted},{t:MODES[mode].n+(eqIn.checked&&disc(mode)?' (fc×1.5)':''),col:C.c}]});
+    const cf=clampFrac(mode,mm);out('rClampDeg').textContent=Math.round(cf*360)+'°';out('rSw').textContent=Math.round((1-cf)*100)+' %';
+    out('rSlf').textContent=cur.toFixed(2);const rel=hc[iM]!=null&&hb[iM]?hc[iM]/hb[iM]:null;out('rHf').textContent=rel?('×'+rel.toFixed(2)):'—';
+    const over=m>MODES[mode].lim+1e-9;out('rState').textContent=over?'Overmod.':'Linear';out('rState').style.color=over?C.a:'';
+    out('mName').innerHTML=MODES[mode].n;out('mDesc').innerHTML=(document.documentElement.lang==='en'&&window.I18N_MODES_EN&&I18N_MODES_EN[mode])||MODES[mode].d;dirty=false}
+  function update(){m=parseFloat(miIn.value);phi=parseFloat(phIn.value)*Math.PI/180;psi=parseFloat(psIn.value)*Math.PI/180;
+    out('miOut').value=m.toFixed(2);out('phOut').value=phIn.value+'°';out('psOut').value=psIn.value+'°';out('rMi').textContent=m.toFixed(2);
+    psIn.disabled=mode!=='gdpwm';out('psWrap').style.opacity=mode==='gdpwm'?1:.4;dirty=true;if(reduce)frame(0)}
+  [miIn,phIn,psIn].forEach(e=>e.addEventListener('input',update));eqIn.addEventListener('change',update);
+  out('psAlign').addEventListener('click',()=>{if(mode!=='gdpwm')selectMode('gdpwm');psIn.value=Math.max(0,Math.min(60,30+parseFloat(phIn.value)));update()});
+  function selectMode(k){mode=k;document.querySelectorAll('#modlab .modes button').forEach(o=>o.setAttribute('aria-pressed',o.dataset.m===k));update()}
+  document.querySelectorAll('#modlab .modes button').forEach(b=>b.addEventListener('click',()=>selectMode(b.dataset.m)));
+  window.addEventListener('resize',()=>{dirty=true});
+
+  const t0=performance.now();
+  function frame(now){
+    const T=reduce?0:(now-t0)/1000;
+    drawHeart(T);
+    const th=reduce?.9:T*1.4;drawWave(th);drawHex(th);if(dirty)refreshCharts();
+    if(!reduce)requestAnimationFrame(frame);
+  }
+  window.addEventListener('resize',()=>{if(reduce)frame(0)});
+  update();requestAnimationFrame(frame);
+
+  const lb=document.getElementById('lb'),lbi=document.getElementById('lbi'),lbc=document.getElementById('lbc');
+  document.querySelectorAll('.gal button').forEach(b=>b.addEventListener('click',()=>{const img=b.querySelector('img');lbi.src=img.src;lbi.alt=img.alt;lbc.textContent=b.parentElement.querySelector('figcaption').textContent;try{lb.showModal()}catch(e){lb.setAttribute('open','')}}));
+  document.getElementById('lbx').addEventListener('click',()=>lb.close());
+  lb.addEventListener('click',e=>{if(e.target===lb)lb.close()});
+
+  /* ---------- mobile menu ---------- */
+  const bar=document.querySelector('.bar'),menuBtn=document.getElementById('menuBtn');
+  function setMenu(open){bar.classList.toggle('open',open);menuBtn.setAttribute('aria-expanded',open)}
+  menuBtn.addEventListener('click',()=>setMenu(!bar.classList.contains('open')));
+  document.querySelectorAll('#sitenav a').forEach(a=>a.addEventListener('click',()=>setMenu(false)));
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&bar.classList.contains('open')){setMenu(false);menuBtn.focus()}});
+  document.addEventListener('click',e=>{if(bar.classList.contains('open')&&!bar.contains(e.target))setMenu(false)});
+  window.addEventListener('resize',()=>{if(window.innerWidth>860)setMenu(false)});
+
+  /* ---------- gallery: show the first row, fold the rest behind "더 보기" ---------- */
+  const UI=()=>(window.I18N_UI||{ko:{more:n=>'더 보기 (+'+n+')',less:'접기',menu:'메뉴'}})[document.documentElement.lang==='en'?'en':'ko'];
+  const gals=[...document.querySelectorAll('.gal')].map(g=>{
+    const figs=[...g.querySelectorAll(':scope > figure')];
+    const btn=document.createElement('button');btn.type='button';btn.className='gal-more';btn.setAttribute('aria-expanded','false');
+    g.after(btn);
+    const st={g,figs,btn,hidden:0};
+    btn.addEventListener('click',()=>{const open=!g.classList.contains('open');g.classList.toggle('open',open);btn.setAttribute('aria-expanded',open);label(st);
+      if(!open){const r=g.getBoundingClientRect();if(r.top<0)g.closest('.proj').scrollIntoView({block:'start'})}});
+    return st});
+  function label(st){st.btn.textContent=st.g.classList.contains('open')?UI().less:UI().more(st.hidden)}
+  function layoutGals(){gals.forEach(st=>{
+    const cols=Math.max(1,getComputedStyle(st.g).gridTemplateColumns.split(' ').length);
+    const target=cols*Math.ceil(3/cols);let units=0,shown=0;
+    for(const f of st.figs){const u=(cols>1&&f.classList.contains('span2'))?2:1;if(shown>0&&units+u>target)break;units+=u;shown++;if(units>=target)break}
+    if(st.figs.length-shown<2)shown=st.figs.length;
+    st.figs.forEach((f,i)=>f.classList.toggle('more',i>=shown));
+    st.hidden=st.figs.length-shown;st.btn.hidden=st.hidden===0;label(st)})}
+  layoutGals();
+  let galT;window.addEventListener('resize',()=>{clearTimeout(galT);galT=setTimeout(layoutGals,150)});
+
+  /* ---------- KO / EN ---------- */
+  const HANGUL=/[가-힣]/,norm=s=>s.replace(/\s+/g,' ').trim();
+  const dict=new Map((window.I18N_EN||[]).map(([k,v])=>[norm(k),v]));
+  const swaps=[];
+  document.querySelectorAll('main *').forEach(el=>{
+    if(el.closest('canvas,script,#mDesc,.gal-more'))return;
+    if(![...el.childNodes].some(n=>n.nodeType===3&&HANGUL.test(n.nodeValue)))return;
+    if(swaps.some(s=>s.el.contains(el)))return;
+    const en=dict.get(norm(el.textContent));
+    if(en)swaps.push({el,ko:el.innerHTML,en});
+    else if(norm(el.textContent)!=='이재훈')console.warn('[i18n] 영어 번역 없음:',norm(el.textContent));
+  });
+  const langBtns=document.querySelectorAll('.lang button');
+  function setLang(l){
+    document.documentElement.lang=l;
+    swaps.forEach(s=>{s.el.innerHTML=l==='en'?s.en:s.ko});
+    langBtns.forEach(b=>b.setAttribute('aria-pressed',b.dataset.lang===l));
+    menuBtn.setAttribute('aria-label',UI().menu);
+    gals.forEach(label);dirty=true;if(reduce)frame(0);
+    try{localStorage.setItem('lang',l)}catch(e){}
+  }
+  langBtns.forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));
+  let startLang='ko';
+  try{const q=new URLSearchParams(location.search).get('lang');startLang=(q==='en'||q==='ko')?q:(localStorage.getItem('lang')||'ko')}catch(e){}
+  if(startLang==='en')setLang('en');
+})();
+</script>
+</body>
+</html>
