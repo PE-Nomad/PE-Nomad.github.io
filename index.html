@@ -150,6 +150,10 @@ a{color:inherit}
 .status .k.now{color:var(--pa)}
 .status b{font-weight:600}
 .status span{display:block;font-size:14px;color:var(--muted)}
+.status .edu2{display:block;margin-top:10px}
+.status .edu-note{margin-top:8px;font-size:13px}
+.rank{display:inline-block;margin-left:8px;padding:1px 7px;font:600 11.5px var(--body);font-style:normal;letter-spacing:0;color:var(--pb);background:color-mix(in srgb,var(--pb) 12%,transparent);border:1px solid color-mix(in srgb,var(--pb) 50%,transparent);border-radius:4px;vertical-align:2px}
+.facts .rank{margin:6px 0 0}
 .facts{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:22px}
 .facts div{padding:14px 14px 14px 0}
 .facts div+div{padding-left:14px;border-left:1px solid var(--line)}
@@ -355,10 +359,10 @@ footer{padding:0 0 56px;font-family:var(--mono);font-size:12px;color:var(--muted
       <div class="status">
         <div><p class="k now">Now</p><p><b>Undergraduate Research Intern · Power Electronics Lab (KUPEL), Korea University</b><span>Advisor: Prof. Kibok Lee · Advanced motor drives, SST, WPT, power conversion hardware</span></p></div>
         <div><p class="k">Next</p><p><b>M.S. program, Power Electronics Lab, Korea University</b><span>석사과정 입학 예정</span></p></div>
-        <div><p class="k">Education</p><p><b>B.S. Physics · B.S. Electrical &amp; Electronic Engineering (Double Major)</b><span>Yonsei University · 2027.02 졸업 예정</span></p></div>
+        <div><p class="k">Education</p><p><b>B.S. Physics</b><em class="rank">Summa Cum Laude</em><span>Yonsei University · Mirae Campus</span><b class="edu2">B.S. Electrical &amp; Electronic Engineering</b><span>Yonsei University · Seoul Campus</span><span class="edu-note">복수전공 · 2027.02 졸업 예정</span></p></div>
       </div>
       <div class="facts">
-        <div><strong>4.48<small> /4.5</small></strong><span>Physics Major GPA</span></div>
+        <div><strong>4.48<small> /4.5</small></strong><span>Physics Major GPA</span><em class="rank">Summa Cum Laude</em></div>
         <div><strong>4.06<small> /4.5</small></strong><span>EEE Major GPA</span></div>
         <div><strong>SCS<small> 2025</small></strong><span>Publication · Co-author</span></div>
       </div>

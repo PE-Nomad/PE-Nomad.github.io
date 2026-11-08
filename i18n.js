@@ -7,7 +7,7 @@ window.I18N_EN = [
   ["Physics와 Electrical & Electronic Engineering을 함께 공부했습니다. motor controller를 설계하고, 그 voltage reference를 inverter의 PWM으로 바꾸고, 다시 DSP register로 옮기는 과정을 직접 modeling하고 measurement하며 익혀왔습니다. 아래의 그림은 모두 제가 만든 model과 결과입니다.",
    "I studied Physics and Electrical &amp; Electronic Engineering together. I have learned the full chain hands-on through modeling and measurement: designing a motor controller, turning its voltage reference into inverter PWM, and then into DSP registers. Every figure below is a model or result I built myself."],
   ["석사과정 입학 예정", "Incoming M.S. student"],
-  ["Yonsei University · 2027.02 졸업 예정", "Yonsei University · Expected graduation Feb 2027"],
+  ["복수전공 · 2027.02 졸업 예정", "Double major · Expected graduation Feb 2027"],
 
   ["motor와 load를 modeling한 뒤 inner current loop부터 outer speed loop까지 안에서 바깥으로 쌓았습니다.",
    "After modeling the motor and load, I built the control from the inside out: inner current loop first, then the outer speed loop."],
