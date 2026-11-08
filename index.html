@@ -522,6 +522,35 @@ footer{padding:0 0 56px;font-family:var(--mono);font-size:12px;color:var(--muted
           <figure><button type="button"><img src="img/r-pmsm_s16_8.webp" alt="Discrete controller torque" loading="lazy"></button><figcaption><b>Discrete controller</b> · torque</figcaption></figure>
         </div>
       </article>
+
+      <article class="proj" id="p-lab">
+        <div class="p-top">
+          <div>
+            <p class="label">M5 · Machine Lab <span class="src">HARDWARE</span></p>
+            <h3>Electric Machine Lab: Synchronous, DC, Universal &amp; Induction Machines on a Lab-Volt EMS Bench</h3>
+            <p class="sum">전력공학 및 전력전자 실험에서 6주 동안 Lab-Volt EMS 장비로 machine을 직접 결선하고 측정했습니다. 시뮬레이션에서 수식으로 다룬 특성을 실제 장비에서 확인한 과정입니다.</p>
+            <ul>
+              <li><b>동기전동기</b>의 유효·무효·피상전력을 측정하고, 병렬 capacitor로 무효전력을 상쇄해 <b>역률을 개선</b></li>
+              <li>동기전동기를 일정 속도 구동원으로 두고 <b>electrodynamometer</b>로 부하를 걸어, 부하가 바뀌어도 동기속도 1800 r/min 근처(1796 r/min)를 유지하는 것을 확인</li>
+              <li>DC <b>분권·직권·복권 전동기</b>를 비교해 기동 토크는 직권이, 속도 변동률은 분권이 유리한 trade-off를 측정하고, DC 발전기의 포화곡선과 부하 특성을 측정</li>
+              <li><b>Universal motor</b>를 AC·DC로 운전하며 보상권선 유무에 따른 전류, 속도, brush spark 차이를 비교</li>
+              <li><b>변압기</b> 극성 판별과 가극성·감극성 직렬 결선, 3상 Y·Δ·open-Δ 결선을 실험</li>
+              <li><b>권선형 유도전동기</b>의 회전자 속도·방향에 따른 회전자 유도전압과 slip을 측정하고, 산업용 <b>VFD</b>로 10–60 Hz V/f 속도 제어</li>
+            </ul>
+          </div>
+          <dl class="meta">
+            <div class="num"><div><b>1796 r/min</b><span>measured speed · sync 1800 r/min</span></div><div><b>6 weeks</b><span>hands-on machine experiments</span></div></div>
+            <div><dt>Tools</dt><dd><span class="chip">Lab-Volt EMS</span><span class="chip">Industrial VFD</span><span class="chip">Tachometer</span><span class="chip">Fluke 17B</span></dd></div>
+          </dl>
+        </div>
+        <div class="gal">
+          <figure><button type="button"><img src="img/lab-bench.webp" alt="Lab-Volt EMS bench with synchronous machine, electrodynamometer, DC machine, meters, power supply and induction motor" loading="lazy"></button><figcaption><span class="ph">Hardware</span><b>Lab-Volt EMS bench</b> · machines, meters, supply</figcaption></figure>
+          <figure><button type="button"><img src="img/lab-wiring.webp" alt="wired experiment setup" loading="lazy"></button><figcaption><span class="ph">Hardware</span><b>Wiring</b> · supply, meters, dynamometer</figcaption></figure>
+          <figure><button type="button"><img src="img/lab-tacho.webp" alt="tachometer reading 1796.8 rpm" loading="lazy"></button><figcaption><span class="ph">Measured</span><b>Speed</b> · 1796.8 r/min</figcaption></figure>
+          <figure><button type="button"><img src="img/lab-dcm-dyno.webp" alt="electrodynamometer EMS-8911 and DC motor/generator EMS-8211" loading="lazy"></button><figcaption><span class="ph">Hardware</span><b>Dynamometer + DC machine</b> · EMS-8911 / 8211</figcaption></figure>
+          <figure><button type="button"><img src="img/lab-dcv.webp" alt="multimeter reading 103.6 V DC on power supply" loading="lazy"></button><figcaption><span class="ph">Measured</span><b>DC supply</b> · 103.6 V (Fluke 17B)</figcaption></figure>
+        </div>
+      </article>
     </div>
   </section>
 
@@ -735,6 +764,35 @@ footer{padding:0 0 56px;font-family:var(--mono);font-size:12px;color:var(--muted
           <figure><button type="button"><img src="img/v-st.webp" alt="STATCOM response" loading="lazy"></button><figcaption><b>STATCOM</b> · reactive power control</figcaption></figure>
         </div>
       </article>
+
+      <article class="proj" id="p-spi">
+        <div class="p-top">
+          <div>
+            <p class="label">I5 · Single-Phase PV Inverter <span class="src">COURSEWORK</span></p>
+            <h3>Single-Phase PV Inverter: LC Filter Design &amp; DC-Link PI Control</h3>
+            <p class="sum">PV array, boost converter, full-bridge inverter를 하나의 시스템으로 묶고, 60 V·60 Hz 정현파를 THD 1% 미만으로 만들기 위해 LC filter와 DC-link 전압 제어기를 설계했습니다.</p>
+            <ul>
+              <li>LC filter를 f<sub>c</sub> ≈ 225 Hz, Q ≈ 0.71(L = 10 mH, C = 50 µF)로 설계해 2400 Hz switching 고조파를 약 −41 dB 감쇠하고, THD를 106%에서 <b>0.71%</b>로 감소</li>
+              <li><b>Full-bridge(0.71%)와 half-bridge(5.65%)</b>를 비교하고, half-bridge의 분압 capacitor가 작으면 기본파가 10.3 V로 떨어지는 원인을 분석</li>
+              <li>측정한 V<sub>PV</sub>로 만든 feedforward가 PV 특성과 <b>양의 feedback</b>을 이뤄 duty가 포화되는 문제를 찾아 고정값으로 수정</li>
+              <li>동작점에 따른 loop gain 변화(dV/dD ∝ 1/(1−D)²)와 <b>RHP zero</b>를 고려해 PI gain을 낮추고, ramp reference로 overshoot를 73%에서 9%로 감소</li>
+              <li>DC-link의 120 Hz ripple이 출력에 180 Hz 성분을 만드는 것을 FFT로 확인 (최종 THD 0.77%)</li>
+            </ul>
+          </div>
+          <dl class="meta">
+            <div class="num"><div><b>0.71 %</b><span>THD after LC filter</span></div><div><b>73 → 9 %</b><span>overshoot · step → ramp ref.</span></div></div>
+            <div><dt>Tools</dt><dd><span class="chip">Simulink</span><span class="chip">MATLAB</span></dd></div>
+          </dl>
+        </div>
+        <div class="gal">
+          <figure><button type="button"><img src="img/spi-fft.webp" alt="full-bridge inverter output FFT, THD 0.71 percent" loading="lazy"></button><figcaption><b>Full-bridge FFT</b> · 59.84 V, THD 0.71%</figcaption></figure>
+          <figure><button type="button"><img src="img/spi-vout.webp" alt="filtered full-bridge inverter output voltage" loading="lazy"></button><figcaption><b>Output voltage</b> · after LC filter, 60 Hz</figcaption></figure>
+          <figure><button type="button"><img src="img/spi-vdc.webp" alt="DC-link voltage tracking 100 V then 170 V" loading="lazy"></button><figcaption><b>DC-link control</b> · 100 → 170 V, ramp reference</figcaption></figure>
+          <figure><button type="button"><img src="img/spi-half-fft.webp" alt="half-bridge FFT with small split capacitors" loading="lazy"></button><figcaption><b>Half-bridge FFT</b> · small split capacitors</figcaption></figure>
+          <figure class="span2"><button type="button"><img src="img/spi-pvsys.webp" alt="PV array, boost converter and inverter system model" loading="lazy"></button><figcaption><b>PV system model</b> · PV + boost + full-bridge inverter</figcaption></figure>
+          <figure><button type="button"><img src="img/spi-model.webp" alt="full-bridge and half-bridge inverter Simulink models" loading="lazy"></button><figcaption><b>Simulink model</b> · full- and half-bridge</figcaption></figure>
+        </div>
+      </article>
     </div>
   </section>
 
@@ -799,6 +857,34 @@ footer{padding:0 0 56px;font-family:var(--mono);font-size:12px;color:var(--muted
           <figure><button type="button"><img src="img/c-sep3.webp" alt="Inductor current CCM check" loading="lazy"></button><figcaption><b>Inductor current</b> · CCM check</figcaption></figure>
           <figure><button type="button"><img src="img/c-sep4.webp" alt="Inductor current CCM check" loading="lazy"></button><figcaption><b>Inductor current</b> · CCM check</figcaption></figure>
           <figure><button type="button"><img src="img/c-sep-fet.webp" alt="Device selection IRFH5020 · 200 V" loading="lazy"></button><figcaption><b>Device selection</b> · IRFH5020 · 200 V</figcaption></figure>
+        </div>
+      </article>
+
+      <article class="proj" id="p-pv">
+        <div class="p-top">
+          <div>
+            <p class="label">C3 · PV + DC/DC <span class="src">COURSEWORK</span></p>
+            <h3>PV Array MPPT with a Boost Converter: Incremental Conductance</h3>
+            <p class="sum">PV cell에서 array, boost converter, MPPT 제어기까지 Simulink로 쌓아 올리며, 일사량·온도·부하에 따라 최대전력점이 어떻게 움직이고 그것을 어떻게 따라가는지 확인했습니다.</p>
+            <ul>
+              <li>부하저항을 1–40 Ω으로 sweep해 찾은 최대 동작점(19 Ω, 154 V, 1249 W)이 PV array 블록의 MPP와 일치함을 확인하고, 셀 온도 100 °C에서 최대전력이 약 32% 줄어드는 것을 분석</li>
+              <li>고정 duty에서는 PV가 전류원 영역에 머물러 MPP의 29%(7.2 kW)밖에 얻지 못하는 원인을 입력 등가저항 <b>R(1−D)²</b>로 설명</li>
+              <li><b>증분 컨덕턴스(InC) MPPT</b>를 MATLAB Function으로 구현해 1000·500 W/m²에서 최대전력의 98.6%·99.2%를 추종하고, duty가 이론값 0.608·0.444로 수렴함을 확인</li>
+              <li>duty step Δd에 따른 <b>추종 속도와 정상상태 진동의 trade-off</b>를 정리하고, 남은 오차를 converter 도통 손실과 분리해 분석</li>
+            </ul>
+          </div>
+          <dl class="meta">
+            <div class="num"><div><b>99.2 %</b><span>of P<sub>MPP</sub> tracked · 500 W/m²</span></div><div><b>49.25 kW</b><span>output at 1000 W/m²</span></div></div>
+            <div><dt>Tools</dt><dd><span class="chip">Simulink</span><span class="chip">MATLAB</span></dd></div>
+          </dl>
+        </div>
+        <div class="gal">
+          <figure><button type="button"><img src="img/pv-mppt-p1000.webp" alt="MPPT output power at 1000 W/m2" loading="lazy"></button><figcaption><b>MPPT output power</b> · 1000 W/m², 49.25 kW</figcaption></figure>
+          <figure><button type="button"><img src="img/pv-sweep.webp" alt="P-V curve from load resistance sweep" loading="lazy"></button><figcaption><b>Load sweep P-V</b> · MPP at 19 Ω</figcaption></figure>
+          <figure><button type="button"><img src="img/pv-temp.webp" alt="PV array I-V and P-V curves at 25, 45 and 100 degC" loading="lazy"></button><figcaption><b>PV array</b> · I-V / P-V vs temperature</figcaption></figure>
+          <figure><button type="button"><img src="img/pv-mppt-p500.webp" alt="MPPT output power at 500 W/m2" loading="lazy"></button><figcaption><b>MPPT output power</b> · 500 W/m², 24.55 kW</figcaption></figure>
+          <figure class="span2"><button type="button"><img src="img/pv-mppt-model.webp" alt="PV array, boost converter and MPPT Simulink model" loading="lazy"></button><figcaption><b>Simulink model</b> · PV array + boost + InC MPPT</figcaption></figure>
+          <figure><button type="button"><img src="img/pv-boost.webp" alt="boost converter output voltage at D = 0.5" loading="lazy"></button><figcaption><b>Boost converter</b> · V<sub>out</sub> at D = 0.5</figcaption></figure>
         </div>
       </article>
 
