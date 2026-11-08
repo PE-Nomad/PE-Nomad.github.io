@@ -2,8 +2,8 @@
    왼쪽: 한국어 문장의 textContent(태그 제거, 공백 정리 후), 오른쪽: 영어 HTML.
    index.html의 한국어 문장을 고치면 여기 왼쪽 키도 똑같이 고쳐야 영어 전환이 계속 동작합니다. */
 window.I18N_EN = [
-  ["모터에서 시작된 current가 power conversion topology를 지나 electric vehicle, data center, aerospace, railway, defense, shipbuilding, robotics, welding으로 흘러갑니다. 한 산업에 머물기보다, 그 모든 길의 공통분모인 motor drive와 power conversion을 깊게 이해하는 generalist가 되려고 합니다.",
-   "Current that starts in a motor flows through a <b>power conversion topology</b> into electric vehicles, data centers, aerospace, railway, defense, shipbuilding, robotics and welding. Rather than staying in one industry, I aim to be a generalist who deeply understands what all of these paths share: <b>motor drives</b> and <b>power conversion</b>."],
+  ["모터에서 시작된 current가 power conversion topology를 지나 electric vehicle, data center, aerospace, railway, defense, shipbuilding, robotics, welding, renewable energy·ESS, home appliance로 흘러갑니다. 한 산업에 머물기보다, 그 모든 길의 공통분모인 motor drive와 power conversion을 깊게 이해하는 generalist가 되려고 합니다.",
+   "Current that starts in a motor flows through a <b>power conversion topology</b> into electric vehicles, data centers, aerospace, railway, defense, shipbuilding, robotics, welding, renewable energy and storage, and home appliances. Rather than staying in one industry, I aim to be a generalist who deeply understands what all of these paths share: <b>motor drives</b> and <b>power conversion</b>."],
   ["Physics와 Electrical & Electronic Engineering을 함께 공부했습니다. motor controller를 설계하고, 그 voltage reference를 inverter의 PWM으로 바꾸고, 다시 DSP register로 옮기는 과정을 직접 modeling하고 measurement하며 익혀왔습니다. 아래의 그림은 모두 제가 만든 model과 결과입니다.",
    "I studied Physics and Electrical &amp; Electronic Engineering together. I have learned the full chain hands-on through modeling and measurement: designing a motor controller, turning its voltage reference into inverter PWM, and then into DSP registers. Every figure below is a model or result I built myself."],
   ["석사과정 입학 예정", "Incoming M.S. student"],

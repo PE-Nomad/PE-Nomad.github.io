@@ -123,9 +123,9 @@ a{color:inherit}
 .intro .lead b{color:var(--ink);font-weight:500}
 .stage{margin-top:28px;border:1px solid var(--line);border-radius:14px;background:radial-gradient(ellipse at 50% 50%,#121a1e 0%,#0a0e10 70%);overflow:hidden}
 #heart{display:block;width:100%}
-.apps{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}
-.apps li:nth-child(4n){border-right:0}
-.apps li:nth-child(-n+4){border-bottom:1px solid var(--line)}
+.apps{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--line)}
+.apps li:nth-child(5n){border-right:0}
+.apps li:nth-child(-n+5){border-bottom:1px solid var(--line)}
 @media (max-width:719px){.apps{display:none}}
 .apps li{list-style:none;padding:14px 16px;border-right:1px solid var(--line);transition:background .4s}
 .apps li:last-child{border-right:0}
@@ -333,9 +333,9 @@ footer{padding:0 0 56px;font-family:var(--mono);font-size:12px;color:var(--muted
   <section class="wrap intro" id="heart-sec">
     <p class="label">Applications</p>
     <h2 class="h1">The motor is <em>the heart.</em></h2>
-    <p class="lead">모터에서 시작된 current가 <b>power conversion topology</b>를 지나 electric vehicle, data center, aerospace, railway, defense, shipbuilding, robotics, welding으로 흘러갑니다. 한 산업에 머물기보다, 그 모든 길의 공통분모인 <b>motor drive</b>와 <b>power conversion</b>을 깊게 이해하는 generalist가 되려고 합니다.</p>
+    <p class="lead">모터에서 시작된 current가 <b>power conversion topology</b>를 지나 electric vehicle, data center, aerospace, railway, defense, shipbuilding, robotics, welding, renewable energy·ESS, home appliance로 흘러갑니다. 한 산업에 머물기보다, 그 모든 길의 공통분모인 <b>motor drive</b>와 <b>power conversion</b>을 깊게 이해하는 generalist가 되려고 합니다.</p>
     <div class="stage">
-      <canvas id="heart" aria-label="중앙의 모터에서 3상 전류가 converter를 거쳐 여덟 산업의 핵심 모터로 들어가 각 시스템을 구동하는 애니메이션"></canvas>
+      <canvas id="heart" aria-label="중앙의 모터에서 3상 전류가 converter를 거쳐 열 개 산업의 핵심 모터로 들어가 각 시스템을 구동하는 애니메이션"></canvas>
       <ol class="apps" id="apps">
         <li><b>Electric Vehicle</b><span>800 V pack · e-axle · SiC inverter</span></li>
         <li><b>Data Center</b><span>48 V busway · PSU · CDU pump</span></li>
@@ -345,6 +345,8 @@ footer{padding:0 0 56px;font-family:var(--mono);font-size:12px;color:var(--muted
         <li><b>Shipbuilding</b><span>Gensets · switchboard · pod drive</span></li>
         <li><b>Robotics</b><span>Rotary & linear actuators</span></li>
         <li><b>Welding</b><span>Inverter power stage · wire feed</span></li>
+        <li><b>Renewable · ESS</b><span>Wind PMSG · PV · grid-forming PCS</span></li>
+        <li><b>Home Appliance</b><span>Inverter A/C · washer · fridge</span></li>
       </ol>
     </div>
   </section>
@@ -1012,7 +1014,7 @@ footer{padding:0 0 56px;font-family:var(--mono);font-size:12px;color:var(--muted
 
   /* ---------- HEART: realistic motor → power module → 8 applications ---------- */
   const heart=document.getElementById('heart'), stage=document.querySelector('.stage'), appsEl=[...document.querySelectorAll('#apps li')];
-  const STEP=2.7, HOLD=3.4, NAPP=8, CYCLE=STEP*NAPP+HOLD;
+  const STEP=2.7, HOLD=3.4, NAPP=10, CYCLE=STEP*NAPP+HOLD;
   const clamp01=v=>Math.max(0,Math.min(1,v));
   function bez(p0,p1,p2,p3,n){const o=[];for(let i=0;i<=n;i++){const t=i/n,u=1-t;o.push([u*u*u*p0[0]+3*u*u*t*p1[0]+3*u*t*t*p2[0]+t*t*t*p3[0],u*u*u*p0[1]+3*u*u*t*p1[1]+3*u*t*t*p2[1]+t*t*t*p3[1]])}return o}
   function poly(x,pts){x.beginPath();pts.forEach((p,i)=>i?x.lineTo(p[0],p[1]):x.moveTo(p[0],p[1]));x.stroke()}
@@ -1277,6 +1279,53 @@ footer{padding:0 0 56px;font-family:var(--mono);font-size:12px;color:var(--muted
        x.fillStyle=g2;x.beginPath();x.arc(173.5,79.5,16,0,TAU);x.fill();
        for(let i=0;i<9;i++){const ph=(s.T*2.2+i*.29)%1,ang=-Math.PI*(.1+.8*((i*.618)%1));const r1=3+ph*24;x.strokeStyle=`rgba(255,${170+Math.floor(60*(1-ph))},80,${1-ph})`;x.lineWidth=.6;
          x.beginPath();x.moveTo(173.5+Math.cos(ang)*r1,79.5+Math.sin(ang)*r1+ph*ph*12);x.lineTo(173.5+Math.cos(ang)*(r1+3),79.5+Math.sin(ang)*(r1+3)+ph*ph*12+.6);x.stroke()}}}}
+  ,
+
+  /* --- 09 Renewable · ESS: wind PMSG + PV strings + grid-forming PCS + battery container --- */
+  {n:'Renewable · ESS',topo:'Wind PMSG · PV · BESS · grid-forming',ct:'inv2',cl:'Grid-forming PCS',core:[45,29],
+   img:mkImg(200,100,`<defs>${GH}${MET}${lg('pv',[[0,'#2f6db3'],[.55,'#163a6b'],[1,'#0d2342']])}${lg('tw',[[0,'#e4eaed'],[1,'#9aa4a9']],1,0)}${lg('ct',[[0,'#d8dee1'],[1,'#8e989c']])}</defs>
+   <rect x="0" y="90" width="200" height="10" fill="#161b1e"/>
+   <path d="M38.2,88 L39.4,33 L42.6,33 L43.8,88 Z" fill="url(#tw)" stroke="#5f696e" stroke-width=".35"/>
+   <rect x="36" y="25" width="19" height="8" rx="3.2" ${ghost}/>${motorSide(41,26.2,9,5.6)}<rect x="37.5" y="28.2" width="4" height="1.6" fill="url(#mt)"/>
+   ${[0,1,2,3].map(i=>{const X=66+i*13.5,Y=70;return `<path d="M${X},${Y+12} L${X+3},${Y} L${X+15},${Y} L${X+12},${Y+12} Z" fill="url(#pv)" stroke="#9ec4e0" stroke-opacity=".55" stroke-width=".35"/><path d="M${X+1.5},${Y+6} L${X+13.5},${Y+6} M${X+6},${Y} L${X+4.5},${Y+12} M${X+10},${Y} L${X+8.5},${Y+12}" stroke="#9ec4e0" stroke-opacity=".35" stroke-width=".25"/><path d="M${X+7},${Y+12} L${X+7},${Y+18}" stroke="#7b858a" stroke-width=".6"/>`}).join('')}
+   ${box(128,58,15,30,'url(#mtd)',1)}<rect x="130" y="61" width="11" height="6" rx=".6" fill="#0f2a1c"/><text x="130.6" y="65.6" font-size="3.2" font-family="monospace" fill="#4be08a">PCS</text>
+   <rect x="150" y="52" width="46" height="36" rx="1.2" fill="url(#ct)" stroke="#5f696e" stroke-width=".45"/>${Array.from({length:22},(_,i)=>`<line x1="${151.5+i*2.05}" y1="53" x2="${151.5+i*2.05}" y2="87" stroke="#6d777c" stroke-opacity=".45" stroke-width=".4"/>`).join('')}
+   <rect x="153" y="57" width="40" height="27" rx="1" ${ghost}/>${cells(155,59,36,22,8,3)}<text x="155" y="56" font-size="3" font-family="monospace" fill="#2b3338">BESS</text>
+   ${hv('M41,34 L41,86 L128,86',1.1)}${hv('M118,82 L124,82 L124,74 L128,74',1)}${hv('M143,72 L155,72',1.1)}`),
+   traces:()=>[[[45,29],[41,33],[41,86],[128,86]],[[118,82],[124,82],[124,74],[128,74]],[[143,72],[155,72]]],
+   dyn(x,s,C){const a=s.T*3.2*s.run,hx=37,hy=29;
+     for(let i=0;i<3;i++){const b=a+i*TAU/3;x.save();x.translate(hx,hy);x.rotate(b);
+       const g=x.createLinearGradient(0,-1.6,0,1.6);g.addColorStop(0,'#f2f5f6');g.addColorStop(1,'#a9b2b6');x.fillStyle=g;
+       x.beginPath();x.moveTo(0,-1.4);x.quadraticCurveTo(10,-2.4,23,-.5);x.lineTo(23,.4);x.quadraticCurveTo(10,1.4,0,1.4);x.closePath();x.fill();x.restore()}
+     let g=x.createRadialGradient(hx-.5,hy-.5,0,hx,hy,2.4);g.addColorStop(0,'#ffffff');g.addColorStop(1,'#8f999e');x.fillStyle=g;x.beginPath();x.arc(hx,hy,2.3,0,TAU);x.fill();
+     for(let r=0;r<3;r++)for(let c=0;c<8;c++){const lit=s.spread>0&&c<Math.floor(s.spread*8.99);x.fillStyle=lit?((Math.floor(s.T*4+r*1.3+c*.7)%5)?'#4fd1bf':'#a8fff0'):'#173c38';x.fillRect(156+c*4.5,59+(r+1)*7.33-1.8,1.6,.8)}
+     if(s.run>0){x.fillStyle='rgba(255,220,120,.18)';x.globalAlpha=.5+.5*Math.sin(s.T*2);x.beginPath();x.arc(20,10,7,0,TAU);x.fill();x.globalAlpha=1}}},
+
+  /* --- 10 Home Appliance: inverter A/C (BLDC compressor + fan), washer drum, fridge --- */
+  {n:'Home Appliance',topo:'Inverter A/C · washer · fridge',ct:'inv2',cl:'BLDC inverter · FOC',core:[64,73],
+   img:mkImg(200,100,`<defs>${GH}${MET}${lg('wh',[[0,'#f1f4f5'],[1,'#b9c2c6']])}${lg('gl',[[0,'#9ec4e0',.5],[1,'#2f5878',.25]],1,1)}</defs>
+   <rect x="0" y="90" width="200" height="10" fill="#161b1e"/>
+   <rect x="8" y="44" width="72" height="46" rx="2.5" fill="url(#wh)" stroke="#7b858a" stroke-width=".5"/>
+   <circle cx="30" cy="67" r="17" fill="#0d1012" stroke="#5f696e" stroke-width=".6"/>${[4,8,12,16].map(r=>`<circle cx="30" cy="67" r="${r}" fill="none" stroke="#9aa4a9" stroke-opacity=".35" stroke-width=".35"/>`).join('')}
+   <rect x="52" y="47" width="25" height="40" rx="1.2" ${ghost}/>
+   <rect x="58" y="65" width="12" height="18" rx="5" fill="url(#mt)" stroke="#20262a" stroke-width=".4"/><rect x="59.5" y="63" width="9" height="3" rx="1.2" fill="url(#mtd)"/>
+   <path d="M64,63 C64,58 72,58 72,54 L72,50" stroke="url(#cu)" stroke-width="1.6" fill="none"/><path d="M60,63 C58,60 56,60 56,55" stroke="url(#cu)" stroke-width="1.4" fill="none"/>
+   ${box(54,48.5,12,6,'url(#mtd)',1)}<text x="54.6" y="57.8" font-size="2.6" font-family="monospace" fill="#2b3338">INV</text>
+   <rect x="108" y="38" width="44" height="52" rx="2.5" fill="url(#wh)" stroke="#7b858a" stroke-width=".5"/>
+   <rect x="108" y="38" width="44" height="9" rx="2.5" fill="#d8dee1" stroke="#7b858a" stroke-width=".4"/><circle cx="115" cy="42.5" r="2.4" fill="#5d676c"/><rect x="132" y="40.5" width="16" height="4" rx=".6" fill="#0a2f1e"/>
+   <circle cx="130" cy="68" r="15" fill="#c9d0d3" stroke="#7b858a" stroke-width=".6"/><circle cx="130" cy="68" r="12" fill="#1a2226"/>
+   <rect x="160" y="18" width="34" height="72" rx="2.5" fill="url(#wh)" stroke="#7b858a" stroke-width=".5"/><line x1="160" y1="44" x2="194" y2="44" stroke="#7b858a" stroke-width=".5"/>
+   <rect x="163" y="24" width="2" height="14" rx="1" fill="#8f999e"/><rect x="163" y="49" width="2" height="22" rx="1" fill="#8f999e"/>
+   <rect x="178" y="76" width="14" height="12" rx="1" ${ghost}/><rect x="181" y="79" width="8" height="8" rx="3.2" fill="url(#mt)" stroke="#20262a" stroke-width=".35"/>
+   ${hv('M64,65 L64,58 L60,54.5',.9)}${hv('M148,46 L150,46 L150,68 L145,68',.8)}${hv('M190,44 L190,78 L189,80',.8)}`),
+   traces:()=>[[[64,73],[64,58],[60,54.5]],[[132,43],[150,46],[150,68],[145,68]],[[180,40],[190,44],[190,78],[185,82]]],
+   dyn(x,s,C){const a=s.T*12*s.run;fan(x,30,67,15.5,a);
+     const d=s.T*6*s.run;x.save();x.beginPath();x.arc(130,68,11.6,0,TAU);x.clip();
+     ['#3a8fd6','#ff7a5c','#f2c23a'].forEach((col,i)=>{const b=d+i*TAU/3;x.fillStyle=col;x.globalAlpha=.75;x.beginPath();x.ellipse(130+Math.cos(b)*6,68+Math.sin(b)*6,4.6,2.6,b,0,TAU);x.fill()});x.globalAlpha=1;
+     x.strokeStyle='rgba(220,235,245,.35)';x.lineWidth=.6;for(let i=0;i<6;i++){const b=d+i*TAU/6;x.beginPath();x.moveTo(130+Math.cos(b)*9,68+Math.sin(b)*9);x.lineTo(130+Math.cos(b)*11.5,68+Math.sin(b)*11.5);x.stroke()}x.restore();
+     x.fillStyle='rgba(180,215,240,.12)';x.beginPath();x.arc(130,68,12,0,TAU);x.fill();x.strokeStyle='rgba(255,255,255,.4)';x.lineWidth=.5;x.beginPath();x.arc(130,68,10,Math.PI*1.1,Math.PI*1.4);x.stroke();
+     x.fillStyle=s.spread>0?'#4be08a':'#1d3a2a';x.font='600 3px monospace';x.textAlign='left';x.fillText(s.spread>0?'1200rpm':'----',133,43.9);
+     if(s.run>0){x.strokeStyle='rgba(160,210,255,.45)';x.lineWidth=.5;for(let i=0;i<3;i++){const o=(s.T*14+i*6)%18;x.globalAlpha=1-o/18;x.beginPath();x.moveTo(10-o*.2,58+i*7);x.lineTo(4-o*.2,58+i*7);x.stroke()}x.globalAlpha=1}}}
   ];
 
   /* ===== power-conversion topology (schematic, 132 x 88 box centred on 0,0) ===== */
@@ -1350,17 +1399,21 @@ footer{padding:0 0 56px;font-family:var(--mono);font-size:12px;color:var(--muted
   let LAY=null;
   function layout(){
     const w=stage.clientWidth, narrow=w<720;
-    const VW=narrow?420:1200, VH=narrow?1740:900;
+    // 10 cards on an ellipse around the motor; sizes chosen so neighbours never overlap
+    const VW=narrow?420:1200, VH=narrow?274+NAPP*182+10:1000;
     heart.style.height=Math.round(w*VH/VW)+'px';
     const L={narrow,VW,VH,cards:[]};
     if(!narrow){
-      L.M={x:600,y:450,r:88};
-      const cw=262,ch=178,rx=440,ry=340;
-      for(let k=0;k<NAPP;k++){const ang=-Math.PI/2+k*TAU/NAPP;const cx=600+rx*Math.cos(ang),cy=450+ry*Math.sin(ang);
+      const CX=600,CY=500;
+      L.M={x:CX,y:CY,r:84};
+      const cw=236,ch=160,rx=470,ry=400;
+      for(let k=0;k<NAPP;k++){const ang=-Math.PI/2+k*TAU/NAPP;const cx=CX+rx*Math.cos(ang),cy=CY+ry*Math.sin(ang);
         const card={x:cx-cw/2,y:cy-ch/2,w:cw,h:ch};
-        const dx=cx-600,dy=cy-450;const tx=dx?((dx>0?card.x:card.x+cw)-600)/dx:Infinity,ty=dy?((dy>0?card.y:card.y+ch)-450)/dy:Infinity;const t=Math.min(Math.abs(tx),Math.abs(ty));
-        const E=[600+dx*t,450+dy*t];const u=Math.hypot(dx,dy);const S=[600+dx/u*(L.M.r+14),450+dy/u*(L.M.r+14)];
-        card.path=[S,E];card.conv=[S[0]+(E[0]-S[0])*.56,S[1]+(E[1]-S[1])*.56];L.cards.push(card)}
+        const dx=cx-CX,dy=cy-CY;const tx=dx?((dx>0?card.x:card.x+cw)-CX)/dx:Infinity,ty=dy?((dy>0?card.y:card.y+ch)-CY)/dy:Infinity;const t=Math.min(Math.abs(tx),Math.abs(ty));
+        const E=[CX+dx*t,CY+dy*t];const u=Math.hypot(dx,dy);const S=[CX+dx/u*(L.M.r+14),CY+dy/u*(L.M.r+14)];
+        // converter icons sit on an ellipse (A x B) around the motor so the ten icons keep even spacing
+        const A=262,B=222,cs=dx/u,sn=dy/u,rc=1/Math.hypot(cs/A,sn/B);
+        card.path=[S,E];card.conv=[CX+cs*rc,CY+sn*rc];L.cards.push(card)}
     }else{
       L.M={x:210,y:128,r:72};
       const top=274,step=182,cw=290,ch=158,cx0=122;
@@ -1446,7 +1499,7 @@ footer{padding:0 0 56px;font-family:var(--mono);font-size:12px;color:var(--muted
       x.fillStyle=on?'#10171b':'#0c1215';x.strokeStyle=on?C.b:C.line;x.lineWidth=on?1.4:1;
       x.beginPath();x.roundRect(c.x,c.y,c.w,c.h,10);x.fill();x.stroke();
       x.textAlign='left';x.fillStyle=on?C.ink:C.muted;x.font='700 15px "Archivo", sans-serif';x.fillText(app.n,c.x+12,c.y+19);
-      x.fillStyle=on?C.c:'#4a585e';x.font='500 10.5px "JetBrains Mono", monospace';x.fillText(app.topo,c.x+12,c.y+c.h-9);
+      x.fillStyle=on?C.c:'#4a585e';x.font='500 10px "JetBrains Mono", monospace';x.fillText(app.topo,c.x+12,c.y+c.h-9);
       x.fillStyle=on?C.b:'#4a585e';x.textAlign='right';x.font='500 10px "JetBrains Mono", monospace';x.fillText(String(i+1).padStart(2,'0'),c.x+c.w-12,c.y+19);
       // illustration
       x.save();x.beginPath();x.roundRect(c.x+1,c.y+24,c.w-2,c.h-44,4);x.clip();
@@ -1460,7 +1513,7 @@ footer{padding:0 0 56px;font-family:var(--mono);font-size:12px;color:var(--muted
       x.restore();
       const core=toV(c,app.core);const E=c.path[c.path.length-1];
       if(fB>0&&fB<1)waveAlong(x,[E,core],fB,reduce?0:T,C,.9,4);
-      convIcon(x,c.conv,fA>=(LAY.narrow?.9:.6),C,app.ct,LAY.narrow?app.cl.split(' · ')[0]:app.cl,reduce?.3:T,LAY.narrow?.72:.86);
+      convIcon(x,c.conv,fA>=(LAY.narrow?.9:.6),C,app.ct,LAY.narrow?app.cl.split(' · ')[0]:app.cl,reduce?.3:T,LAY.narrow?.72:.74);
       if(appsEl[i])appsEl[i].classList.toggle('on',on);
     });
     const hb=(T%1.1);const beat=reduce?0:Math.exp(-(hb*hb)/.004)+.7*Math.exp(-((hb-.22)**2)/.004);
